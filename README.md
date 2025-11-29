@@ -131,3 +131,13 @@ emitData(items, addedItemId: addedItemId);
 
 
 ```
+
+1. firebase version
+
+2. firebase setup:emulators:firestore
+
+3. firebase project:list
+
+4. dart pub global activate flutterfire_cli
+
+dart pub global run flutterfire_cli:flutterfire configure --project=baisakhi-enterprise-vet-clinic --platforms=web
