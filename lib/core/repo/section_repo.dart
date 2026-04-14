@@ -1,6 +1,6 @@
 import 'package:form_template/core/repo/form_repo_mixin.dart';
 import 'package:form_template/core/service/form_service_mixin.dart';
-import 'package:form_template/models/data_model.dart';
+import 'package:form_template/models/interface/data_model.dart';
 
 class SectionRepo<T extends DataModel> with FormRepoMixin<T> {
   //store all instance which multi repository provider created

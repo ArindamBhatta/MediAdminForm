@@ -1,4 +1,4 @@
-import 'package:form_template/models/data_model.dart';
+import 'package:form_template/models/interface/data_model.dart';
 
 sealed class FormViewState<T extends DataModel> {}
 

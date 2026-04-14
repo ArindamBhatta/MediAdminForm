@@ -1,5 +1,5 @@
 // ignore_for_file: must_be_immutable
-import 'package:form_template/models/data_model.dart';
+import 'package:form_template/models/interface/data_model.dart';
 
 class PetOwnerModel extends DataModel {
   String? id;
@@ -21,6 +21,28 @@ class PetOwnerModel extends DataModel {
     this.whatsapp,
     this.pets,
   });
+
+  PetOwnerModel copyWith({
+    String? id,
+    String? name,
+    String? address,
+    String? mobile,
+    String? alternateMobile,
+    String? email,
+    String? whatsapp,
+    List<String>? pets,
+  }) {
+    return PetOwnerModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      address: address ?? this.address,
+      mobile: mobile ?? this.mobile,
+      alternateMobile: alternateMobile ?? this.alternateMobile,
+      email: email ?? this.email,
+      whatsapp: whatsapp ?? this.whatsapp,
+      pets: pets ?? this.pets,
+    );
+  }
 
   PetOwnerModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -60,31 +82,4 @@ class PetOwnerModel extends DataModel {
 
   @override
   String? get uid => id;
-
-  @override
-  String toString() {
-    return 'PetOwnerModel(name: $name, id: $id)';
-  }
-
-  PetOwnerModel copyWith({
-    String? id,
-    String? name,
-    String? address,
-    String? mobile,
-    String? alternateMobile,
-    String? email,
-    String? whatsapp,
-    List<String>? pets,
-  }) {
-    return PetOwnerModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      address: address ?? this.address,
-      mobile: mobile ?? this.mobile,
-      alternateMobile: alternateMobile ?? this.alternateMobile,
-      email: email ?? this.email,
-      whatsapp: whatsapp ?? this.whatsapp,
-      pets: pets ?? this.pets,
-    );
-  }
 }
