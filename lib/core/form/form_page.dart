@@ -1,31 +1,10 @@
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_template/core/form/cubit/form_cubit.dart';
 import 'package:form_template/core/widgets/custom_button.dart';
+import 'package:form_template/core/widgets/enums.dart';
 import 'package:form_template/core/widgets/globals.dart';
 import 'package:form_template/models/interface/data_model.dart';
-
-enum FieldType {
-  status,
-  general,
-  name,
-  address,
-  mobileNumber,
-  whatsapp,
-  email,
-  password,
-  age,
-  dropdown,
-  date,
-  time,
-  multiSelect,
-  amount,
-}
-
-enum SortBy { name, id }
-
-enum SortOrder { ascending, descending }
 
 class FormPageview extends StatefulWidget {
   final FormCubit formCubit;
@@ -60,20 +39,43 @@ class FormPageview extends StatefulWidget {
 }
 
 class _FormPageviewState extends State<FormPageview> {
-  final _formKey = GlobalKey<FormState>();
+  //final _formKey = GlobalKey<FormState>();
+  final Map<String, dynamic> _formData = {};
 
   @override
   Widget build(BuildContext context) {
-    //Todo: why blocProvider.value
+    // BlocProvider.value is the recommended way to provide an existing bloc/cubit instance to a subtree, especially when the instance is managed outside the subtree (like in your widget).
     return BlocProvider.value(
       value: widget.formCubit,
-      child: Padding(
-        padding: EdgeInsetsGeometry.all(Globals.sidePadding),
-        child: Column(spacing: Globals.formFieldGap, children: []),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(Globals.sidePadding),
+            child: Column(
+              spacing: Globals.formFieldGap,
+              children: widget.fields
+                  .where((field) {
+                    if (field.isVisible != null) {
+                      return field.isVisible!(_formData);
+                    }
+                    return true;
+                  })
+                  .map((field) {
+                    return Placeholder();
+                  })
+                  .toList(),
+            ),
+          ),
+
+          //save and cancel buttons
+          Column(),
+        ],
       ),
     );
   }
 }
+
+void getWidgetForFieldType(WidgetConfig fields) {}
 
 //UI access Model so user can access easily
 class WidgetConfig {
@@ -142,3 +144,14 @@ class ListingWidgetConfig extends WidgetConfig {
     super.isVisible,
   }) : super(fieldType: FieldType.dropdown);
 }
+
+// Widget getWidgetForFieldType(WidgetConfig field) {
+//   final fieldType = field.fieldType;
+//   final key = field.key;
+//   final initialValue = field.initialValue;
+//   final labelText = field.labelText;
+//   final enabled = field.enabled;
+//   final mandatory = field.mandatory;
+//   final icon = field.icon ?? Icons.text_fields_sharp;
+//   final iconSize = field.iconSize ?? 20.0;
+// }
