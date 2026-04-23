@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_template/core/form/cubit/form_cubit.dart';
+import 'package:form_template/core/form/widgets/general_form_field.dart';
 import 'package:form_template/core/widgets/custom_button.dart';
 import 'package:form_template/core/widgets/enums.dart';
 import 'package:form_template/core/widgets/globals.dart';
@@ -75,7 +77,57 @@ class _FormPageviewState extends State<FormPageview> {
   }
 }
 
-void getWidgetForFieldType(WidgetConfig fields) {}
+void getWidgetForFieldType(WidgetConfig field) {
+  final FieldType fieldType = field.fieldType;
+  final key = field.key;
+  final initialValue = field.initialValue;
+  final labelText = field.labelText ?? '';
+  final enable = field.enabled;
+  final mandatory = field.mandatory;
+  final icon = field.icon ?? FontAwesomeIcons.tex;
+  final iconSize = field.iconSize ?? 20.0;
+  final isFieldInteractive = fieldType == FieldType.status
+      ? field.keepTextVisible
+      : (enable != false);
+
+  final fieldWidget = switch (fieldType) {
+    FieldType.general => FormFieldView(
+      key: Key(key),
+      initialValue: initialValue,
+      labelText: labelText,
+      mandatory: mandatory,
+      icon: icon,
+      iconSize: iconSize,
+      textCapitalization: field.textCapitalization ?? TextCapitalization.none,
+    ),
+    // TODO: Handle this case.
+    FieldType.status => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.name => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.address => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.mobileNumber => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.whatsapp => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.email => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.password => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.age => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.dropdown => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.date => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.time => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.multiSelect => throw UnimplementedError(),
+    // TODO: Handle this case.
+    FieldType.amount => throw UnimplementedError(),
+  };
+}
 
 //UI access Model so user can access easily
 class WidgetConfig {
@@ -144,14 +196,3 @@ class ListingWidgetConfig extends WidgetConfig {
     super.isVisible,
   }) : super(fieldType: FieldType.dropdown);
 }
-
-// Widget getWidgetForFieldType(WidgetConfig field) {
-//   final fieldType = field.fieldType;
-//   final key = field.key;
-//   final initialValue = field.initialValue;
-//   final labelText = field.labelText;
-//   final enabled = field.enabled;
-//   final mandatory = field.mandatory;
-//   final icon = field.icon ?? Icons.text_fields_sharp;
-//   final iconSize = field.iconSize ?? 20.0;
-// }

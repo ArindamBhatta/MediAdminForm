@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:form_template/core/widgets/custom_button.dart';
-import 'package:form_template/core/widgets/custom_dialogbox.dart';
+import 'package:form_template/core/widgets/custom_dialog_box.dart';
 import 'package:form_template/core/widgets/custom_textfield.dart';
-import 'package:form_template/core/widgets/customisable_search_bar.dart';
+import 'package:form_template/core/widgets/customizable_search_bar.dart';
 import 'package:form_template/core/widgets/enums.dart';
 import 'package:form_template/core/widgets/globals.dart';
 import 'package:form_template/models/interface/data_model.dart';

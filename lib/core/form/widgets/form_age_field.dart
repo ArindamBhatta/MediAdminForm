@@ -84,19 +84,6 @@ class _FormAgeFieldState extends State<FormAgeField> {
   (String year, String month, String day) get ageValues =>
       (_yearController.text, _monthController.text, _dayController.text);
 
-  /// Call this to trigger onSaved callback
-  // void save() {
-  //   if (widget.onSaved != null) {
-  //     final values = ageValues;
-  //     // If all fields are empty, pass null
-  //     if (values.$1.isEmpty && values.$2.isEmpty && values.$3.isEmpty) {
-  //       widget.onSaved!(null);
-  //     } else {
-  //       widget.onSaved!(values);
-  //     }
-  //   }
-  // }
-
   void _notifyChanged() {
     widget.onChanged?.call(
       _yearController.text,
