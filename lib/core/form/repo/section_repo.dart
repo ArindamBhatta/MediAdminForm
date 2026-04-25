@@ -1,4 +1,4 @@
-import 'package:form_template/core/repo/form_repo_mixin.dart';
+import 'package:form_template/core/form/repo/form_repo_mixin.dart';
 import 'package:form_template/core/service/form_service_mixin.dart';
 import 'package:form_template/models/interface/data_model.dart';
 

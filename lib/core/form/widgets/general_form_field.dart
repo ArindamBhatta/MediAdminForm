@@ -6,8 +6,6 @@ import 'package:form_template/core/widgets/custom_textfield.dart';
 class FormFieldView extends StatefulWidget {
   final String? initialValue;
   final String? errorText;
-  final void Function(String?)? onChanged;
-  final void Function(String?)? onSaved;
   final String labelText;
   final bool? enabled;
   final bool? mandatory;
@@ -17,14 +15,14 @@ class FormFieldView extends StatefulWidget {
   final double iconSize;
   final bool isPassword;
   final TextCapitalization textCapitalization;
-  late final String? Function(String?)? _validate;
+  final void Function(String?)? onChanged;
+  final void Function(String?)? onSaved;
+  final String? Function(String?)? _validate;
 
   FormFieldView({
     super.key,
     this.initialValue,
     this.errorText,
-    this.onChanged,
-    this.onSaved,
     required this.labelText,
     this.enabled = true,
     this.mandatory = true,
@@ -34,25 +32,25 @@ class FormFieldView extends StatefulWidget {
     this.iconSize = 22,
     this.isPassword = false,
     this.textCapitalization = TextCapitalization.none,
+    this.onChanged,
+    this.onSaved,
     String? Function(String?)? validate,
-  }) {
-    _validate =
-        validate ??
-        ((value) {
-          if (mandatory ?? true) {
-            if (value == null || value.trim().isEmpty) {
-              return '$labelText is required';
-            }
-          }
-          return null;
-        });
-  }
+  }) : _validate =
+           validate ??
+           ((value) {
+             if (mandatory ?? true) {
+               if (value == null || value.trim().isEmpty) {
+                 return '$labelText is required';
+               }
+             }
+             return null;
+           });
 
   factory FormFieldView.name({
     Key? key,
     String? initialValue,
     String? labelText,
-    bool? enable = true,
+    bool? enabled = true,
     bool? mandatory = true,
     TextCapitalization? textCapitalization,
     void Function(String?)? onChanged,
@@ -66,7 +64,7 @@ class FormFieldView extends StatefulWidget {
       mandatory: mandatory,
       textCapitalization: textCapitalization ?? TextCapitalization.words,
       onSaved: onSaved,
-      enabled: enable,
+      enabled: enabled,
     );
   }
 
@@ -74,7 +72,7 @@ class FormFieldView extends StatefulWidget {
     Key? key,
     String? initialValue,
     String? labelText,
-    bool? enable = true,
+    bool? enabled = true,
     bool? mandatory = true,
     TextCapitalization? textCapitalization,
     void Function(String?)? onChanged,
@@ -84,7 +82,7 @@ class FormFieldView extends StatefulWidget {
       key: key,
       initialValue: initialValue,
       labelText: labelText ?? 'Address',
-      enabled: enable,
+      enabled: enabled,
       mandatory: mandatory,
       icon: FontAwesomeIcons.locationDot,
       keyboardType: TextInputType.streetAddress,
@@ -99,7 +97,7 @@ class FormFieldView extends StatefulWidget {
     Key? key,
     String? initialValue,
     String? labelText,
-    bool? enable = true,
+    bool? enabled = true,
     bool? mandatory = true,
     void Function(String?)? onChanged,
     void Function(String?)? onSaved,
@@ -109,7 +107,7 @@ class FormFieldView extends StatefulWidget {
       key: key,
       initialValue: initialValue,
       labelText: labelText ?? 'Mobile Number',
-      enabled: enable,
+      enabled: enabled,
       mandatory: mandatory,
       icon: FontAwesomeIcons.phone,
       keyboardType: TextInputType.phone,

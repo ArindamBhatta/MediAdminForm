@@ -11,8 +11,7 @@ class FormTimeField extends StatefulWidget {
   final bool? mandatory;
   final void Function(String hour, String minute, String period)? onChanged;
   final void Function(String hour, String minute, String period)? onSaved;
-
-  /// Validators for each field
+  // Validators for each field
   final String? Function(String?)? hourValidator;
   final String? Function(String?)? minuteValidator;
 

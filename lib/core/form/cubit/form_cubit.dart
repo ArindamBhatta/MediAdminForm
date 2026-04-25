@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:form_template/core/repo/form_repo_mixin.dart';
+import 'package:form_template/core/form/repo/form_repo_mixin.dart';
 import 'package:form_template/models/interface/data_model.dart';
 
 part 'form_state.dart';
@@ -11,7 +11,7 @@ class FormCubit<T extends DataModel> extends Cubit<FormViewState> {
   FormCubit({required this.repo}) : super(FromInitial());
 
   // Create
-  Future<void> create(T item) async {
+  Future<void> createItem(T item) async {
     emit(FormInProgress(operation: FormOperation.create));
 
     try {
@@ -26,6 +26,7 @@ class FormCubit<T extends DataModel> extends Cubit<FormViewState> {
     } catch (error) {
       emit(FormFailure(error: error.toString()));
       debugPrint('Error creating item: $error');
+      rethrow;
     }
   }
 

@@ -6,7 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_template/core/form/cubit/form_cubit.dart';
-import 'package:form_template/core/repo/section_repo.dart';
+import 'package:form_template/core/form/repo/section_repo.dart';
 import 'package:form_template/core/service/section_service.dart';
 import 'package:form_template/firebase_options.dart';
 import 'package:form_template/home/view.dart';
