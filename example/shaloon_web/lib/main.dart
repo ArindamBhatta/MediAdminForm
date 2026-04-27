@@ -11,13 +11,13 @@ void main() async {
     await ShaloonBootstrap.run(useEmulators: true);
 
     runApp(
-      AppBootstrap.buildApp(
+      AppBootstrap.buildRouterApp(
         title: 'Shaloon',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
           useMaterial3: true,
         ),
-        shell: const ShalloonShell(),
+        shellBuilder: (context, child) => ShalloonShell(child: child),
       ),
     );
   } catch (e) {

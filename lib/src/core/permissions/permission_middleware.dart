@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:web_ui_plugins/src/core/contracts/permission_contract.dart';
-import 'package:web_ui_plugins/src/core/registry/plugin_registry.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 /// Middleware that enforces permissions at two levels:

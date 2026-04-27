@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 import '../../domain/enums/shalloon_enums.dart';
@@ -31,7 +32,9 @@ final staffPlugin = PluginDescriptor<StaffModel>(
   routes: [
     PluginRouteDescriptor(
       path: '/staff',
-      builder: (ctx) => const StaffSectionPage(),
+      builder: (BuildContext ctx, GoRouterState state) => StaffSectionPage(
+        initialSelectedItemId: state.uri.queryParameters['selected'],
+      ),
     ),
   ],
 );
@@ -39,7 +42,9 @@ final staffPlugin = PluginDescriptor<StaffModel>(
 /// Staff section page — the developer writes this view.
 /// The framework handles data, state, list, form, and dialog.
 class StaffSectionPage extends StatelessWidget {
-  const StaffSectionPage({super.key});
+  final String? initialSelectedItemId;
+
+  const StaffSectionPage({super.key, this.initialSelectedItemId});
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +56,7 @@ class StaffSectionPage extends StatelessWidget {
       sectionTitle: 'Staff',
       repo: repo,
       formCubit: cubit,
+      initialSelectedItemId: initialSelectedItemId,
       createEmptyModel: StaffModel.empty,
       rebuildDataModel: (data) => StaffModel(
         id: data['id'] as String?,

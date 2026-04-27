@@ -1,9 +1,9 @@
 /// Compatibility layer for code still using the old SectionRepo / SectionService API.
 ///
 /// Old:
-///   SectionRepo<PetOwnerModel>(SectionService('pets', fromJson))
+///   `SectionRepo<PetOwnerModel>(SectionService('pets', fromJson))`
 /// New (preferred):
-///   ScopedRepo<PetOwnerModel>(moduleId: 'pets', service: FirestoreService(...))
+///   `ScopedRepo<PetOwnerModel>(moduleId: 'pets', service: FirestoreService(...))`
 library;
 
 import 'package:web_ui_plugins/src/core/contracts/data_model.dart';

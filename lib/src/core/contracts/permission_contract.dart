@@ -64,7 +64,12 @@ class PersonaPermissionPolicy implements PermissionPolicy {
 
   @override
   PermissionResult evaluate(PermissionContext context) {
-    if (allowedPersonas.contains(context.user.persona)) {
+    final normalizedPersona = context.user.persona.trim().toLowerCase();
+    final normalizedAllowedPersonas = allowedPersonas
+        .map((persona) => persona.trim().toLowerCase())
+        .toSet();
+
+    if (normalizedAllowedPersonas.contains(normalizedPersona)) {
       return const PermissionResult.granted();
     }
     return PermissionResult.denied(

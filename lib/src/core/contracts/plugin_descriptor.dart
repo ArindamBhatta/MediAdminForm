@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
 import 'package:web_ui_plugins/src/core/contracts/permission_contract.dart';
+
+typedef PluginRouteBuilder =
+    Widget Function(BuildContext context, GoRouterState state);
 
 /// Declares which optional framework capabilities a plugin uses.
 class PluginFeatureFlags {
@@ -17,11 +21,13 @@ class PluginFeatureFlags {
 
 /// Describes a single route a plugin contributes to the app shell.
 class PluginRouteDescriptor {
+  final String? name;
   final String path;
-  final WidgetBuilder builder;
+  final PluginRouteBuilder builder;
   final PermissionPolicy? accessPolicy;
 
   const PluginRouteDescriptor({
+    this.name,
     required this.path,
     required this.builder,
     this.accessPolicy,

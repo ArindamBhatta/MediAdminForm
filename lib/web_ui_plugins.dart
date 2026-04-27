@@ -7,7 +7,7 @@
 /// 4. Register a [PluginDescriptor] in [AppBootstrap].
 ///
 /// Firebase is the default adapter. No other backend setup is required.
-library web_ui_plugins;
+library;
 
 // ── Core contracts ────────────────────────────────────────────────────────────
 export 'src/core/contracts/data_model.dart';
@@ -25,6 +25,9 @@ export 'src/core/bootstrap/app_bootstrap.dart';
 
 // ── Permissions ───────────────────────────────────────────────────────────────
 export 'src/core/permissions/permission_middleware.dart';
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+export 'src/core/navigation/plugin_left_navigation.dart';
 
 // ── Form layer (cubit + state + page + field widgets) ─────────────────────────
 export 'src/core/form/cubit/form_cubit.dart';

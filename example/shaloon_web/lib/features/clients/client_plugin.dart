@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 import '../../domain/enums/shalloon_enums.dart';
@@ -33,13 +34,17 @@ final clientPlugin = PluginDescriptor<ClientModel>(
   routes: [
     PluginRouteDescriptor(
       path: '/clients',
-      builder: (ctx) => const ClientSectionPage(),
+      builder: (BuildContext ctx, GoRouterState state) => ClientSectionPage(
+        initialSelectedItemId: state.uri.queryParameters['selected'],
+      ),
     ),
   ],
 );
 
 class ClientSectionPage extends StatelessWidget {
-  const ClientSectionPage({super.key});
+  final String? initialSelectedItemId;
+
+  const ClientSectionPage({super.key, this.initialSelectedItemId});
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +56,7 @@ class ClientSectionPage extends StatelessWidget {
       sectionTitle: 'Clients',
       repo: repo,
       formCubit: cubit,
+      initialSelectedItemId: initialSelectedItemId,
       createEmptyModel: ClientModel.empty,
       rebuildDataModel: (data) => ClientModel(
         id: data['id'] as String?,

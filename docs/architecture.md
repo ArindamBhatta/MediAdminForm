@@ -11,7 +11,7 @@ Build a plug-and-play plugin framework where an end developer onboards a new dom
 
 Everything else — state, repo, service, routing, permissions, sidebar, CRUD, uploads — is wired by the framework.
 
-Targets multi-module SaaS products: clinic, shaloon/salon, medical admin.
+Targets multi-module SaaS products: clinic, shalloon/salon, medical admin.
 
 ---
 
@@ -65,20 +65,20 @@ lib/
         └── compat.dart            ← migration shims for old SectionRepo/SectionService usage
 
 example/
-└── shaloon_web/                  ← reference consumer app
+└── shalloon_web/                  ← reference consumer app
     ├── pubspec.yaml              ← depends on web_ui_plugins via path
     └── lib/
         ├── main.dart             ← 3-line bootstrap entry point
         ├── app/
-        │   └── bootstrap.dart    ← ShaloonBootstrap.run()
+        │   └── bootstrap.dart    ← ShalloonBootstrap.run()
         ├── domain/
-        │   ├── enums/            ← ShaloonSection, ShaloonPersona, AppointmentStatus
+        │   ├── enums/            ← ShalloonSection, ShalloonPersona, AppointmentStatus
         │   └── models/           ← StaffModel, ClientModel (only thing devs write)
         ├── features/
         │   ├── staff/            ← staffPlugin descriptor + StaffDetailView
         │   └── clients/          ← clientPlugin descriptor + ClientDetailView
         └── home/
-            └── shell_view.dart   ← ShaloonShell — sidebar generated from registry
+            └── shell_view.dart   ← ShalloonShell — sidebar generated from registry
 ```
 
 ---
@@ -214,7 +214,7 @@ void main() async {
 
   await AppBootstrap.registerPlugins([staffPlugin, clientPlugin]);
 
-  runApp(AppBootstrap.buildApp(title: 'Shaloon', shell: ShaloonShell()));
+  runApp(AppBootstrap.buildApp(title: 'Shalloon', shell: ShalloonShell()));
 }
 ```
 
