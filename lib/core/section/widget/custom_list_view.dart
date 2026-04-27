@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:form_template/core/section/widget/custom_list_tile.dart';
-import 'package:form_template/core/widgets/enums.dart';
-import 'package:form_template/models/interface/data_model.dart';
+import 'package:web_ui_plugins/core/section/widget/custom_list_tile.dart';
+import 'package:web_ui_plugins/core/widgets/enums.dart';
+import 'package:web_ui_plugins/models/interface/data_model.dart';
 
 class CustomListView extends StatefulWidget {
   final List<DataModel> data;

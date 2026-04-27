@@ -1,4 +1,4 @@
-import 'package:form_template/core/widgets/enums.dart';
+import 'package:web_ui_plugins/core/widgets/enums.dart';
 
 class Globals {
   static Role persona = Role.operator;

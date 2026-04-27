@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:form_template/core/form/cubit/form_cubit.dart';
-import 'package:form_template/core/form/form_page.dart';
-import 'package:form_template/core/form/repo/form_repo_mixin.dart';
-import 'package:form_template/core/section/cubit/section_cubit.dart';
-import 'package:form_template/core/section/widget/custom_list_view.dart';
-import 'package:form_template/core/section/widget/no_data_view.dart';
-import 'package:form_template/core/section/widget/section_view.dart';
-import 'package:form_template/core/section/widget/sub_section_view.dart';
-import 'package:form_template/core/widgets/custom_button.dart';
-import 'package:form_template/core/widgets/custom_dialog_box.dart';
-import 'package:form_template/core/widgets/custom_snack_bar.dart';
-import 'package:form_template/core/widgets/customizable_search_bar.dart';
-import 'package:form_template/core/widgets/enums.dart';
-import 'package:form_template/core/widgets/globals.dart' show Globals;
+import 'package:web_ui_plugins/core/form/cubit/form_cubit.dart';
+import 'package:web_ui_plugins/core/form/form_page.dart';
+import 'package:web_ui_plugins/core/form/repo/form_repo_mixin.dart';
+import 'package:web_ui_plugins/core/section/cubit/section_cubit.dart';
+import 'package:web_ui_plugins/core/section/widget/custom_list_view.dart';
+import 'package:web_ui_plugins/core/section/widget/no_data_view.dart';
+import 'package:web_ui_plugins/core/section/widget/section_view.dart';
+import 'package:web_ui_plugins/core/section/widget/sub_section_view.dart';
+import 'package:web_ui_plugins/core/widgets/custom_button.dart';
+import 'package:web_ui_plugins/core/widgets/custom_dialog_box.dart';
+import 'package:web_ui_plugins/core/widgets/custom_snack_bar.dart';
+import 'package:web_ui_plugins/core/widgets/customizable_search_bar.dart';
+import 'package:web_ui_plugins/core/widgets/enums.dart';
+import 'package:web_ui_plugins/core/widgets/globals.dart';
 
 import '../../../models/interface/data_model.dart';
 

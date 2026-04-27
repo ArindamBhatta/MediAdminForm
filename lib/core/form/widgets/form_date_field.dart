@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:form_template/core/widgets/custom_button.dart';
-import 'package:form_template/core/widgets/custom_textfield.dart';
-import 'package:form_template/core/widgets/globals.dart';
+import 'package:web_ui_plugins/core/widgets/custom_button.dart';
+import 'package:web_ui_plugins/core/widgets/custom_textfield.dart';
+import 'package:web_ui_plugins/core/widgets/globals.dart';
 
 class FormDateField extends StatefulWidget {
   final String? initialValue; // date string, e.g. "2020-01-01"

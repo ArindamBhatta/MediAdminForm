@@ -1,6 +1,6 @@
-import 'package:form_template/core/form/repo/form_repo_mixin.dart';
-import 'package:form_template/core/service/form_service_mixin.dart';
-import 'package:form_template/models/interface/data_model.dart';
+import 'package:web_ui_plugins/core/form/repo/form_repo_mixin.dart';
+import 'package:web_ui_plugins/core/service/form_service_mixin.dart';
+import 'package:web_ui_plugins/models/interface/data_model.dart';
 
 class SectionRepo<T extends DataModel> with FormRepoMixin<T> {
   //SectionRepo uses a Type key to uniquely identify instances based only on the type.

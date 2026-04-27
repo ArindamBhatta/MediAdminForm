@@ -1,0 +1,34 @@
+name: shaloon_web
+description: "Shaloon — SaaS salon/clinic admin web app built on web_ui_plugins."
+version: 1.0.0+1
+publish_to: "none"
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The framework package (local path)
+  web_ui_plugins:
+    path: ../..
+
+  # Firebase (required by the package's Firebase adapter)
+  firebase_core: ^4.1.0
+  cloud_firestore: ^6.0.1
+  cloud_functions: ^6.0.1
+  firebase_auth: ^6.4.0
+  firebase_storage: ^13.3.0
+
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

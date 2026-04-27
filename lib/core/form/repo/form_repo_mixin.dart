@@ -1,7 +1,6 @@
 import 'dart:async';
-
-import 'package:form_template/core/service/form_service_mixin.dart';
-import 'package:form_template/models/interface/data_model.dart';
+import 'package:web_ui_plugins/core/service/form_service_mixin.dart';
+import 'package:web_ui_plugins/models/interface/data_model.dart';
 
 //knows when and why to call CRUD, caches results, tracks IDs, emits streams.
 mixin FormRepoMixin<T extends DataModel> {

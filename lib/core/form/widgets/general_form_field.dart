@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:form_template/core/widgets/custom_textfield.dart';
+import 'package:web_ui_plugins/core/widgets/custom_textfield.dart';
 
 class FormFieldView extends StatefulWidget {
   final String? initialValue;

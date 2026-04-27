@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:form_template/core/form/cubit/form_cubit.dart';
-import 'package:form_template/core/form/repo/form_repo_mixin.dart';
-import 'package:form_template/core/widgets/enums.dart';
+import 'package:web_ui_plugins/core/form/cubit/form_cubit.dart';
+import 'package:web_ui_plugins/core/form/repo/form_repo_mixin.dart';
+import 'package:web_ui_plugins/core/widgets/enums.dart';
 
 import '../../../models/interface/data_model.dart';
 

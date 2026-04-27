@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
-import 'package:form_template/core/functions/date_time_utils.dart';
-import 'package:form_template/core/widgets/custom_button.dart';
-import 'package:form_template/core/widgets/custom_snack_bar.dart';
-import 'package:form_template/core/widgets/enums.dart';
-import 'package:form_template/core/widgets/globals.dart';
-import 'package:form_template/models/interface/data_model.dart';
+import 'package:web_ui_plugins/core/functions/date_time_utils.dart';
+import 'package:web_ui_plugins/core/widgets/custom_button.dart';
+import 'package:web_ui_plugins/core/widgets/custom_snack_bar.dart';
+import 'package:web_ui_plugins/core/widgets/enums.dart';
+import 'package:web_ui_plugins/core/widgets/globals.dart';
+import 'package:web_ui_plugins/models/interface/data_model.dart';
+
 import 'cubit/form_cubit.dart';
 import 'widgets/form_age_field.dart';
 import 'widgets/form_dropdown_field.dart';

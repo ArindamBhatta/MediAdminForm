@@ -1,0 +1,66 @@
+/// web_ui_plugins — Plug-and-play SaaS admin UI package.
+///
+/// To use this package:
+/// 1. Define your entity (implements [DataModel]).
+/// 2. Define your section/persona enums.
+/// 3. Define your view widget.
+/// 4. Register a [PluginDescriptor] in [AppBootstrap].
+///
+/// Firebase is the default adapter. No other backend setup is required.
+library web_ui_plugins;
+
+// ── Core contracts ────────────────────────────────────────────────────────────
+export 'src/core/contracts/data_model.dart';
+export 'src/core/contracts/form_service_mixin.dart';
+export 'src/core/contracts/plugin_descriptor.dart';
+export 'src/core/contracts/permission_contract.dart';
+export 'src/core/contracts/upload_contract.dart';
+
+// ── Registry ─────────────────────────────────────────────────────────────────
+export 'src/core/registry/scoped_registry.dart';
+export 'src/core/registry/plugin_registry.dart';
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
+export 'src/core/bootstrap/app_bootstrap.dart';
+
+// ── Permissions ───────────────────────────────────────────────────────────────
+export 'src/core/permissions/permission_middleware.dart';
+
+// ── Form layer (cubit + state + page + field widgets) ─────────────────────────
+export 'src/core/form/cubit/form_cubit.dart';
+export 'src/core/form/form_page.dart';
+export 'src/core/form/widgets/general_form_field.dart';
+export 'src/core/form/widgets/form_dropdown_field.dart';
+export 'src/core/form/widgets/form_multiselect_field.dart';
+export 'src/core/form/widgets/form_date_field.dart';
+export 'src/core/form/widgets/form_time_field.dart';
+export 'src/core/form/widgets/form_age_field.dart';
+export 'src/core/form/repo/form_repo_mixin.dart';
+
+// ── Section layer (cubit + state + widgets) ───────────────────────────────────
+export 'src/core/section/cubit/section_cubit.dart';
+export 'src/core/section/widget/section_view.dart';
+export 'src/core/section/widget/section_widget.dart';
+export 'src/core/section/widget/sub_section_view.dart';
+export 'src/core/section/widget/custom_list_view.dart';
+export 'src/core/section/widget/custom_list_tile.dart';
+export 'src/core/section/widget/no_data_view.dart';
+
+// ── Shared UI primitives ──────────────────────────────────────────────────────
+export 'src/core/widgets/custom_button.dart';
+export 'src/core/widgets/custom_dialog_box.dart';
+export 'src/core/widgets/custom_snack_bar.dart';
+export 'src/core/widgets/custom_textfield.dart';
+export 'src/core/widgets/customizable_search_bar.dart';
+export 'src/core/widgets/enums.dart';
+export 'src/core/widgets/globals.dart';
+
+// ── Utility functions ─────────────────────────────────────────────────────────
+export 'src/core/functions/date_time_utils.dart';
+
+// ── Firebase adapter (default) ────────────────────────────────────────────────
+export 'src/adapters/firebase/firestore_service.dart';
+export 'src/adapters/firebase/scoped_repo.dart';
+
+// ── Compatibility layer (incremental migration from old SectionRepo/SectionService)
+export 'src/compat/compat.dart';

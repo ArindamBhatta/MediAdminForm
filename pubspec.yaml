@@ -1,8 +1,7 @@
-name: form_template
-description: "A new Flutter project."
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+name: web_ui_plugins
+description: "Plug-and-play SaaS admin UI plugin framework for Flutter Web. Firebase-first. Model + Enum + View = done."
+version: 0.1.0
+publish_to: "none"
 
 environment:
   sdk: ^3.9.0
@@ -17,15 +16,19 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
-  firebase_core: ^4.1.0
-  cloud_firestore: ^6.0.1
+  # State management
   flutter_bloc: ^9.1.1
   equatable: ^2.0.7
+
+  # Firebase adapter (default)
+  firebase_core: ^4.1.0
+  cloud_firestore: ^6.0.1
   cloud_functions: ^6.0.1
   firebase_auth: ^6.4.0
+  firebase_storage: ^13.3.0
+
+  # UI
+  cupertino_icons: ^1.0.8
   font_awesome_flutter: ^10.8.0
   toggle_switch: ^2.3.0
 
