@@ -1,6 +1,76 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
+
+class _RightTooltip extends StatefulWidget {
+  final String message;
+  final bool enabled;
+  final Widget child;
+
+  const _RightTooltip({
+    required this.message,
+    required this.enabled,
+    required this.child,
+  });
+
+  @override
+  State<_RightTooltip> createState() => _RightTooltipState();
+}
+
+class _RightTooltipState extends State<_RightTooltip> {
+  OverlayEntry? _entry;
+
+  void _show(Offset position) {
+    if (!widget.enabled || widget.message.isEmpty) {
+      return;
+    }
+    _remove();
+    _entry = OverlayEntry(
+      builder: (_) => Positioned(
+        left: position.dx + 14,
+        top: position.dy - 12,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.grey[800],
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              widget.message,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_entry!);
+  }
+
+  void _remove() {
+    _entry?.remove();
+    _entry = null;
+  }
+
+  @override
+  void dispose() {
+    _remove();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (event) => _show(event.position),
+      onExit: (_) => _remove(),
+      child: widget.child,
+    );
+  }
+}
 
 class PluginLeftNavigation extends StatefulWidget {
   final String? title;
@@ -56,10 +126,15 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
       message: _collapsed ? 'Expand sidebar' : 'Collapse sidebar',
       child: IconButton(
         onPressed: _toggleCollapse,
-        icon: Icon(
-          _collapsed ? Icons.menu_open : Icons.menu,
-          color: Theme.of(context).colorScheme.onPrimaryFixed,
-          size: 20,
+        icon: Transform.rotate(
+          angle: math.pi,
+          child: Icon(
+            Icons.view_sidebar_outlined,
+            color: Theme.of(
+              context,
+            ).colorScheme.onPrimaryFixed.withAlpha(_collapsed ? 255 : 128),
+            size: 22,
+          ),
         ),
       ),
     );
@@ -120,86 +195,83 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
           if (widget.showHeader && widget.showCollapseToggle)
             _buildHeader(context),
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-              itemCount: items.length,
-              separatorBuilder: (_, _) => Divider(
-                color: Theme.of(context).colorScheme.outlineVariant,
-                height: 12,
-              ),
-              itemBuilder: (context, index) {
-                final descriptor = items[index].descriptor;
-                final primaryRoute = descriptor.routes.firstOrNull;
-                if (primaryRoute == null) {
-                  return const SizedBox.shrink();
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final showLabels = !_collapsed && constraints.maxWidth >= 180;
+                const itemHeight = 34.0;
+                const separatorHeight = 16.0;
+
+                double? selectedTop;
+                var runningTop = 0.0;
+                for (var index = 0; index < items.length; index++) {
+                  final descriptor = items[index].descriptor;
+                  final isSelected = _matchesRoute(
+                    currentPath,
+                    descriptor.routes,
+                  );
+
+                  if (isSelected) {
+                    selectedTop = runningTop;
+                    break;
+                  }
+
+                  runningTop += itemHeight;
+                  if (index < items.length - 1) {
+                    runningTop += separatorHeight;
+                  }
                 }
 
-                final isSelected = _matchesRoute(currentPath, descriptor.routes);
-                return Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {
-                      if (widget.warnOnUnsavedChanges &&
-                          currentPath != primaryRoute.path &&
-                          Globals.hasUnsavedFormChanges) {
-                        CustomSnackBar.show(
-                          context,
-                          'You lost some unsaved changes by navigating out of this page.',
-                          category: SnackBarCategory.warning,
-                        );
-                        Globals.hasUnsavedFormChanges = false;
-                      }
-
-                      context.go(primaryRoute.path);
-                      widget.onItemTap?.call();
-                    },
-                    child: Tooltip(
-                      message: _collapsed ? descriptor.title : '',
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 220),
-                        curve: Curves.easeInOutCubic,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: _collapsed ? 10 : 14,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? descriptor.color.withValues(alpha: 0.12)
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: _collapsed
-                              ? MainAxisAlignment.center
-                              : MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              descriptor.icon,
-                              color: descriptor.color,
-                              size: 20,
-                            ),
-                            if (!_collapsed) ...[
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  descriptor.title,
-                                  style: Theme.of(
+                return ListView(
+                  padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
+                  children: [
+                    Stack(
+                      children: [
+                        if (selectedTop != null)
+                          AnimatedPositioned(
+                            duration: _animDuration,
+                            curve: _animCurve,
+                            left: 0,
+                            right: 0,
+                            top: selectedTop,
+                            child: IgnorePointer(
+                              child: Container(
+                                height: itemHeight,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
                                     context,
-                                  ).textTheme.labelLarge?.copyWith(
-                                    fontWeight: isSelected
-                                        ? FontWeight.w600
-                                        : FontWeight.w400,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
+                                  ).colorScheme.primary.withValues(alpha: .1),
+                                  borderRadius: BorderRadius.zero,
                                 ),
                               ),
+                            ),
+                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (
+                              var index = 0;
+                              index < items.length;
+                              index++
+                            ) ...[
+                              _buildNavItem(
+                                context,
+                                currentPath: currentPath,
+                                descriptor: items[index].descriptor,
+                                showLabels: showLabels,
+                                itemHeight: itemHeight,
+                              ),
+                              if (index < items.length - 1)
+                                Divider(
+                                  color: Theme.of(context).colorScheme.outline,
+                                  thickness: 0.5,
+                                  height: separatorHeight,
+                                ),
                             ],
                           ],
                         ),
-                      ),
+                      ],
                     ),
-                  ),
+                  ],
                 );
               },
             ),
@@ -207,6 +279,87 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
           if (widget.footerBuilder != null)
             widget.footerBuilder!(context, _collapsed),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem(
+    BuildContext context, {
+    required String currentPath,
+    required PluginDescriptor descriptor,
+    required bool showLabels,
+    required double itemHeight,
+  }) {
+    final primaryRoute = descriptor.routes.firstOrNull;
+    if (primaryRoute == null) {
+      return const SizedBox.shrink();
+    }
+
+    final isSelected = _matchesRoute(currentPath, descriptor.routes);
+
+    return SizedBox(
+      height: itemHeight,
+      child: _RightTooltip(
+        message: descriptor.title,
+        enabled: !showLabels,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.zero,
+            onTap: () {
+              if (widget.warnOnUnsavedChanges &&
+                  currentPath != primaryRoute.path &&
+                  Globals.hasUnsavedFormChanges) {
+                CustomSnackBar.show(
+                  context,
+                  'You lost some unsaved changes by navigating out of this page.',
+                  category: SnackBarCategory.warning,
+                );
+                Globals.hasUnsavedFormChanges = false;
+              }
+
+              context.go(primaryRoute.path);
+              widget.onItemTap?.call();
+            },
+            child: Padding(
+              padding: showLabels
+                  ? const EdgeInsets.symmetric(horizontal: 20)
+                  : const EdgeInsets.symmetric(horizontal: 6),
+              child: Row(
+                mainAxisAlignment: showLabels
+                    ? MainAxisAlignment.start
+                    : MainAxisAlignment.center,
+                children: [
+                  Icon(descriptor.icon, color: descriptor.color, size: 20),
+                  if (showLabels) ...[
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: AnimatedDefaultTextStyle(
+                        duration: _animDuration,
+                        curve: _animCurve,
+                        style:
+                            Theme.of(context).textTheme.labelLarge?.copyWith(
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            ) ??
+                            TextStyle(
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            ),
+                        child: Text(
+                          descriptor.title,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

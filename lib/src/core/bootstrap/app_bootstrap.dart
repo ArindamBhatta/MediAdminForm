@@ -73,6 +73,8 @@ class AppBootstrap {
   static Widget buildApp({
     required Widget shell,
     ThemeData? theme,
+    ThemeData? darkTheme,
+    ThemeMode? themeMode,
     String title = '',
   }) {
     final providers = _buildProviders();
@@ -83,7 +85,13 @@ class AppBootstrap {
           final cubits = _buildCubits(context);
           return MultiBlocProvider(
             providers: cubits,
-            child: MaterialApp(title: title, theme: theme, home: shell),
+            child: MaterialApp(
+              title: title,
+              theme: theme,
+              darkTheme: darkTheme,
+              themeMode: themeMode,
+              home: shell,
+            ),
           );
         },
       ),
@@ -93,6 +101,8 @@ class AppBootstrap {
   static Widget buildRouterApp({
     required Widget Function(BuildContext context, Widget child) shellBuilder,
     ThemeData? theme,
+    ThemeData? darkTheme,
+    ThemeMode? themeMode,
     String title = '',
     String? initialLocation,
     WidgetBuilder? forbiddenBuilder,
@@ -115,6 +125,8 @@ class AppBootstrap {
             child: MaterialApp.router(
               title: title,
               theme: theme,
+              darkTheme: darkTheme,
+              themeMode: themeMode,
               routerConfig: router,
             ),
           );

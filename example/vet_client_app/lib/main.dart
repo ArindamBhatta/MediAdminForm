@@ -4,6 +4,8 @@ import 'package:vet_application/home/vet_application.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 import 'app/vet_application_bootstrap.dart';
+import 'theme/app_colors.dart';
+import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,10 +36,13 @@ void main() async {
     runApp(
       AppBootstrap.buildRouterApp(
         title: 'Vet Client App',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-          useMaterial3: true,
+        theme: AppTheme.light.copyWith(
+          colorScheme: AppTheme.light.colorScheme.copyWith(
+            primary: AppColors.primary,
+          ),
         ),
+        darkTheme: AppTheme.dark,
+        themeMode: ThemeMode.system,
         shellBuilder: (context, child) => VetApplication(child: child),
       ),
     );
