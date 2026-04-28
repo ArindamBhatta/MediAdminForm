@@ -1,5 +1,5 @@
 import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
-import 'package:web_ui_plugins/src/core/contracts/form_service_mixin.dart';
+import 'package:web_ui_plugins/src/core/form/service/form_service_mixin.dart';
 import 'package:web_ui_plugins/src/core/form/repo/form_repo_mixin.dart';
 import 'package:web_ui_plugins/src/core/registry/scoped_registry.dart';
 
@@ -8,13 +8,13 @@ import 'package:web_ui_plugins/src/core/registry/scoped_registry.dart';
 ///
 /// This prevents cross-module collisions when two plugins use the same model
 /// type but different collections.
-class ScopedRepo<T extends DataModel> with FormRepoMixin<T> {
-  static final ScopedRegistry<ScopedRepo> _registry =
-      ScopedRegistry<ScopedRepo>();
+class SectionRepo<T extends DataModel> with FormRepoMixin<T> {
+  static final ScopedRegistry<SectionRepo> _registry =
+      ScopedRegistry<SectionRepo>();
 
   final String moduleId;
 
-  ScopedRepo._internal({
+  SectionRepo._internal({
     required this.moduleId,
     required FormServiceMixin<T> service,
   }) {
@@ -22,7 +22,7 @@ class ScopedRepo<T extends DataModel> with FormRepoMixin<T> {
   }
 
   /// Scoped factory: one repo per (moduleId, T, collectionName) triple.
-  factory ScopedRepo({
+  factory SectionRepo({
     required String moduleId,
     required FormServiceMixin<T> service,
   }) {
@@ -36,9 +36,10 @@ class ScopedRepo<T extends DataModel> with FormRepoMixin<T> {
       collection: collectionName,
     );
     return _registry.getOrCreate(
-      key,
-      () => ScopedRepo<T>._internal(moduleId: moduleId, service: service),
-    ) as ScopedRepo<T>;
+          key,
+          () => SectionRepo<T>._internal(moduleId: moduleId, service: service),
+        )
+        as SectionRepo<T>;
   }
 
   /// Convenience lookup: find an item by its uid in the local cache.

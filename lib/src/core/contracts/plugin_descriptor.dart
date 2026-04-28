@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
 import 'package:web_ui_plugins/src/core/contracts/permission_contract.dart';
 
+/// Core contracts and descriptors that plugin authors implement to onboard new modules into the app shell. These are the only framework-specific classes a plugin author interacts with when building a new section.
 typedef PluginRouteBuilder =
     Widget Function(BuildContext context, GoRouterState state);
 

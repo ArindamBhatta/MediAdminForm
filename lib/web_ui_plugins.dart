@@ -11,7 +11,7 @@ library;
 
 // ── Core contracts ────────────────────────────────────────────────────────────
 export 'src/core/contracts/data_model.dart';
-export 'src/core/contracts/form_service_mixin.dart';
+export 'src/core/form/service/form_service_mixin.dart';
 export 'src/core/contracts/plugin_descriptor.dart';
 export 'src/core/contracts/permission_contract.dart';
 export 'src/core/contracts/upload_contract.dart';

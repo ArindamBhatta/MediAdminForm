@@ -23,19 +23,6 @@ class ClientModel extends DataModel {
     this.tags,
   });
 
-  factory ClientModel.empty() => ClientModel();
-
-  factory ClientModel.fromJson(Map<String, dynamic> json) => ClientModel(
-    id: json['id'] as String?,
-    name: json['name'] as String?,
-    mobile: json['mobile'] as String?,
-    email: json['email'] as String?,
-    whatsapp: json['whatsapp'] as String?,
-    address: json['address'] as String?,
-    photoUrl: json['photoUrl'] as String?,
-    tags: (json['tags'] as List?)?.cast<String>(),
-  );
-
   ClientModel copyWith({
     String? id,
     String? name,
@@ -45,28 +32,43 @@ class ClientModel extends DataModel {
     String? address,
     String? photoUrl,
     List<String>? tags,
-  }) => ClientModel(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    mobile: mobile ?? this.mobile,
-    email: email ?? this.email,
-    whatsapp: whatsapp ?? this.whatsapp,
-    address: address ?? this.address,
-    photoUrl: photoUrl ?? this.photoUrl,
-    tags: tags ?? this.tags,
-  );
+  }) {
+    return ClientModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      mobile: mobile ?? this.mobile,
+      email: email ?? this.email,
+      whatsapp: whatsapp ?? this.whatsapp,
+      address: address ?? this.address,
+      photoUrl: photoUrl ?? this.photoUrl,
+      tags: tags ?? this.tags,
+    );
+  }
+
+  ClientModel.formJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    mobile = json['mobile'];
+    email = json['email'];
+    whatsapp = json['whatsapp'];
+    address = json['address'] as String?;
+    photoUrl = json['photoUrl'] as String?;
+    tags = json['tags'];
+  }
 
   @override
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'mobile': mobile,
-    'email': email,
-    'whatsapp': whatsapp,
-    'address': address,
-    'photoUrl': photoUrl,
-    'tags': tags,
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['mobile'] = mobile;
+    data['email'] = email;
+    data['whatsapp'] = whatsapp;
+    data['address'] = address;
+    data['photoUrl'] = photoUrl;
+    data['tags'] = tags;
+    return data;
+  }
 
   @override
   String? get uid => id;

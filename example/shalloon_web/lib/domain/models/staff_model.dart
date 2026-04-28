@@ -22,18 +22,6 @@ class StaffModel extends DataModel {
     this.isActive = true,
   });
 
-  factory StaffModel.empty() => StaffModel();
-
-  factory StaffModel.fromJson(Map<String, dynamic> json) => StaffModel(
-    id: json['id'] as String?,
-    name: json['name'] as String?,
-    role: json['role'] as String?,
-    mobile: json['mobile'] as String?,
-    email: json['email'] as String?,
-    photoUrl: json['photoUrl'] as String?,
-    isActive: json['isActive'] as bool? ?? true,
-  );
-
   StaffModel copyWith({
     String? id,
     String? name,
@@ -42,15 +30,27 @@ class StaffModel extends DataModel {
     String? email,
     String? photoUrl,
     bool? isActive,
-  }) => StaffModel(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    role: role ?? this.role,
-    mobile: mobile ?? this.mobile,
-    email: email ?? this.email,
-    photoUrl: photoUrl ?? this.photoUrl,
-    isActive: isActive ?? this.isActive,
-  );
+  }) {
+    return StaffModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      role: role ?? this.role,
+      mobile: mobile ?? this.mobile,
+      email: email ?? this.email,
+      photoUrl: photoUrl ?? this.photoUrl,
+      isActive: isActive ?? this.isActive,
+    );
+  }
+
+  StaffModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    role = json['role'];
+    mobile = json['mobile'];
+    email = json['email'];
+    photoUrl = json['photoUrl'];
+    isActive = json['isActive'] as bool? ?? true;
+  }
 
   @override
   Map<String, dynamic> toJson() => {

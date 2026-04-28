@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
 
-import '../../domain/enums/shalloon_enums.dart';
-import '../../domain/models/staff_model.dart';
-import 'staff_view.dart';
+import '../domain/enums/shalloon_enums.dart';
+import '../domain/models/staff_model.dart';
 
 /// Staff plugin descriptor.
 /// This is the entire surface area the developer fills in to add a new section.
@@ -27,7 +26,7 @@ final staffPlugin = PluginDescriptor<StaffModel>(
   dataBinding: PluginDataBinding<StaffModel>(
     collectionName: 'staff',
     fromJson: StaffModel.fromJson,
-    createEmpty: StaffModel.empty,
+    createEmpty: StaffModel.new,
   ),
   routes: [
     PluginRouteDescriptor(
@@ -46,12 +45,12 @@ class StaffSectionPage extends StatelessWidget {
 
   const StaffSectionPage({super.key, this.initialSelectedItemId});
 
-  ScopedRepo<StaffModel> _resolveRepo(BuildContext context) {
+  SectionRepo<StaffModel> _resolveRepo(BuildContext context) {
     try {
-      return RepositoryProvider.of<ScopedRepo<StaffModel>>(context);
+      return RepositoryProvider.of<SectionRepo<StaffModel>>(context);
     } catch (_) {
       final binding = staffPlugin.dataBinding;
-      return ScopedRepo<StaffModel>(
+      return SectionRepo<StaffModel>(
         moduleId: staffPlugin.moduleId,
         service: FirestoreService<StaffModel>(
           moduleId: staffPlugin.moduleId,
@@ -62,7 +61,7 @@ class StaffSectionPage extends StatelessWidget {
     }
   }
 
-  Widget _buildSection(BuildContext context, ScopedRepo<StaffModel> repo) {
+  Widget _buildSection(BuildContext context, SectionRepo<StaffModel> repo) {
     final cubit = BlocProvider.of<FormCubit<StaffModel>>(context);
 
     return SectionWidget<StaffModel>(
@@ -73,7 +72,8 @@ class StaffSectionPage extends StatelessWidget {
       repo: repo,
       formCubit: cubit,
       initialSelectedItemId: initialSelectedItemId,
-      createEmptyModel: StaffModel.empty,
+      createEmptyModel: StaffModel.new,
+
       rebuildDataModel: (data) => StaffModel(
         id: data['id'] as String?,
         name: data['name'] as String?,
@@ -83,7 +83,50 @@ class StaffSectionPage extends StatelessWidget {
         photoUrl: data['photoUrl'] as String?,
         isActive: data['isActive'] as bool? ?? true,
       ),
-      initialTabDetailBuilder: (item, ctx) => StaffDetailView(staff: item),
+
+      initialTabDetailBuilder: (item, ctx) => FormPageView(
+        formCubit: BlocProvider.of<FormCubit<StaffModel>>(ctx),
+        dataModel: item,
+        rebuildDataModel: (data) => StaffModel(
+          id: data['id'] as String?,
+          name: data['name'] as String?,
+          role: data['role'] as String?,
+          mobile: data['mobile'] as String?,
+          email: data['email'] as String?,
+          photoUrl: data['photoUrl'] as String?,
+          isActive: data['isActive'] as bool? ?? true,
+        ),
+        fields: [
+          WidgetConfig(
+            key: 'name',
+            fieldType: FieldType.name,
+            labelText: 'Full Name',
+            initialValue: item.name,
+            mandatory: true,
+          ),
+          WidgetConfig(
+            key: 'role',
+            fieldType: FieldType.name,
+            labelText: 'Role',
+            initialValue: item.role,
+            mandatory: true,
+          ),
+          WidgetConfig(
+            key: 'mobile',
+            fieldType: FieldType.mobileNumber,
+            labelText: 'Mobile',
+            initialValue: item.mobile,
+            mandatory: true,
+          ),
+          WidgetConfig(
+            key: 'email',
+            fieldType: FieldType.email,
+            labelText: 'Email',
+            initialValue: item.email,
+            mandatory: false,
+          ),
+        ],
+      ),
     );
   }
 

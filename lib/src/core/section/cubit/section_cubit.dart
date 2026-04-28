@@ -147,25 +147,29 @@ class SectionCubit<T extends DataModel> extends Cubit<SectionState<T>> {
 
   void loadAll() async {
     emit(state.copyWith(status: SuccessStatus.waiting));
-    final items = await repo.readAll(forceFetch: true);
-    final filtered = _applyFilters(
-      items,
-      searchText: state.searchText,
-      selectedStatuses: state.selectedStatuses,
-      fromDate: state.fromDate,
-      toDate: state.toDate,
-    );
-    final selected = _resolveSelected(selectedItem, filtered);
-    selectedItem = selected;
-    emit(
-      state.copyWith(
-        status: SuccessStatus.success,
-        items: items,
-        filteredItems: filtered,
-        selectedItem: selected,
-        addedItemId: null,
-      ),
-    );
+    try {
+      final items = await repo.readAll(forceFetch: true);
+      final filtered = _applyFilters(
+        items,
+        searchText: state.searchText,
+        selectedStatuses: state.selectedStatuses,
+        fromDate: state.fromDate,
+        toDate: state.toDate,
+      );
+      final selected = _resolveSelected(selectedItem, filtered);
+      selectedItem = selected;
+      emit(
+        state.copyWith(
+          status: SuccessStatus.success,
+          items: items,
+          filteredItems: filtered,
+          selectedItem: selected,
+          addedItemId: null,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: SuccessStatus.error));
+    }
   }
 
   void search(String text) {

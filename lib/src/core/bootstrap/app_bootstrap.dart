@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:web_ui_plugins/src/adapters/firebase/scoped_repo.dart';
 import 'package:web_ui_plugins/src/core/contracts/permission_contract.dart';
 import 'package:web_ui_plugins/src/core/contracts/plugin_descriptor.dart';
 import 'package:web_ui_plugins/src/core/contracts/upload_contract.dart';
 import 'package:web_ui_plugins/src/core/permissions/permission_middleware.dart';
 import 'package:web_ui_plugins/src/core/registry/plugin_registry.dart';
-import 'package:web_ui_plugins/src/adapters/firebase/scoped_repo.dart';
 import 'package:web_ui_plugins/src/adapters/firebase/firestore_service.dart';
 import 'package:web_ui_plugins/src/core/form/cubit/form_cubit.dart';
 
@@ -166,7 +166,7 @@ class AppBootstrap {
       final desc = entry.descriptor;
       return RepositoryProvider(
         key: ValueKey('repo_${desc.moduleId}'),
-        create: (_) => ScopedRepo(
+        create: (_) => SectionRepo(
           moduleId: desc.moduleId,
           service: FirestoreService(
             moduleId: desc.moduleId,
@@ -185,7 +185,7 @@ class AppBootstrap {
       return BlocProvider(
         key: ValueKey('cubit_${desc.moduleId}'),
         create: (_) =>
-            FormCubit(repo: RepositoryProvider.of<ScopedRepo>(context)),
+            FormCubit(repo: RepositoryProvider.of<SectionRepo>(context)),
       );
     }).toList();
   }
