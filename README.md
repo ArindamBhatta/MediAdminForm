@@ -17,11 +17,11 @@ Here are some example screenshots to help you understand what you can build with
 
 | UI Example |  |
 |---|---|
-| <img src="docs/assets/images/Screenshot_1.png" width="300"/> | Pet Owner List UI |
-| <img src="docs/assets/images/Screenshot_2.png" width="300"/> | Example 2 |
-| <img src="docs/assets/images/Screenshot_3.png" width="300"/> | Example 3 |
-| <img src="docs/assets/images/Screenshot_4.png" width="300"/> | Example 4 |
-| <img src="docs/assets/images/Screenshot_5.png" width="300"/> | Example 5 |
+| <img src="docs/assets/images/Screenshot_1.png" width="900"/> |
+| <img src="docs/assets/images/Screenshot_2.png" width="900"/> |
+| <img src="docs/assets/images/Screenshot_3.png" width="900"/> | 
+| <img src="docs/assets/images/Screenshot_4.png" width="900"/> | 
+| <img src="docs/assets/images/Screenshot_5.png" width="900"/> | 
 
 ## Features
 
