@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
 
@@ -87,25 +88,13 @@ class ClientSectionPage extends StatelessWidget {
         name: data['name'] as String?,
         address: data['address'] as String?,
         mobile: data['mobile'] as String?,
-        alternateMobile: data['alternateMobile'] as String?,
         email: data['email'] as String?,
         whatsapp: data['whatsapp'] as String?,
-        pincode: data['pincode'] as String?,
       ),
 
       initialTabDetailBuilder: (item, ctx) => FormPageView(
         formCubit: BlocProvider.of<FormCubit<PetOwnerModel>>(ctx),
         dataModel: item,
-        rebuildDataModel: (data) => PetOwnerModel(
-          id: data['id'] as String?,
-          name: data['name'] as String?,
-          address: data['address'] as String?,
-          mobile: data['mobile'] as String?,
-          alternateMobile: data['alternateMobile'] as String?,
-          email: data['email'] as String?,
-          whatsapp: data['whatsapp'] as String?,
-          pincode: data['pincode'] as String?,
-        ),
         fields: [
           WidgetConfig(
             key: 'name',
@@ -113,6 +102,7 @@ class ClientSectionPage extends StatelessWidget {
             labelText: 'Full Name',
             initialValue: item.name,
             mandatory: true,
+            icon: FontAwesomeIcons.solidUser,
           ),
 
           WidgetConfig(
@@ -121,6 +111,7 @@ class ClientSectionPage extends StatelessWidget {
             labelText: 'Address',
             initialValue: item.address,
             mandatory: false,
+            icon: FontAwesomeIcons.house,
           ),
 
           WidgetConfig(
@@ -129,6 +120,7 @@ class ClientSectionPage extends StatelessWidget {
             labelText: 'Mobile',
             initialValue: item.mobile,
             mandatory: true,
+            icon: FontAwesomeIcons.mobileScreen,
           ),
 
           WidgetConfig(
@@ -137,23 +129,34 @@ class ClientSectionPage extends StatelessWidget {
             labelText: 'Email',
             initialValue: item.email,
             mandatory: false,
+            icon: FontAwesomeIcons.solidEnvelope,
           ),
 
           WidgetConfig(
-            key: 'pincode',
-            fieldType: FieldType.address,
-            labelText: 'Pincode',
-            initialValue: item.pincode,
+            key: 'whatsapp',
+            labelText: 'WhatsApp',
+            initialValue: item.whatsapp,
+            fieldType: FieldType.mobileNumber,
             mandatory: false,
+            icon: FontAwesomeIcons.whatsapp,
           ),
         ],
+
+        rebuildDataModel: (data) => PetOwnerModel(
+          id: data['id'] as String?,
+          name: data['name'] as String?,
+          address: data['address'] as String?,
+          mobile: data['mobile'] as String?,
+          email: data['email'] as String?,
+          whatsapp: data['whatsapp'] as String?,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final repo = _resolveRepo(context);
+    final SectionRepo<PetOwnerModel> repo = _resolveRepo(context);
     FormCubit<PetOwnerModel>? existingCubit;
     try {
       existingCubit = BlocProvider.of<FormCubit<PetOwnerModel>>(context);

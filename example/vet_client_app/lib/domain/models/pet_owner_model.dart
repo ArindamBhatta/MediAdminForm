@@ -7,20 +7,16 @@ class PetOwnerModel extends DataModel {
   String? name;
   String? address;
   String? mobile;
-  String? alternateMobile;
   String? email;
   String? whatsapp;
-  String? pincode;
 
   PetOwnerModel({
     this.id,
     this.name,
     this.address,
     this.mobile,
-    this.alternateMobile,
     this.email,
     this.whatsapp,
-    this.pincode,
   });
 
   PetOwnerModel copyWith({
@@ -38,10 +34,8 @@ class PetOwnerModel extends DataModel {
       name: name ?? this.name,
       address: address ?? this.address,
       mobile: mobile ?? this.mobile,
-      alternateMobile: alternateMobile ?? this.alternateMobile,
       email: email ?? this.email,
       whatsapp: whatsapp ?? this.whatsapp,
-      pincode: pincode ?? this.pincode,
     );
   }
 
@@ -50,10 +44,8 @@ class PetOwnerModel extends DataModel {
     name = json['name'];
     address = json['address'];
     mobile = json['mobile'];
-    alternateMobile = json['alternateMobile'];
     email = json['email'];
     whatsapp = json['whatsapp'];
-    pincode = json['pincode'];
   }
 
   @override
@@ -63,10 +55,8 @@ class PetOwnerModel extends DataModel {
     data['name'] = name;
     data['address'] = address;
     data['mobile'] = mobile;
-    data['alternateMobile'] = alternateMobile;
     data['email'] = email;
     data['whatsapp'] = whatsapp;
-    data['pincode'] = pincode;
     return data;
   }
 

@@ -12,6 +12,8 @@ class FormTimeField extends StatefulWidget {
   // Validators for each field
   final String? Function(String?)? hourValidator;
   final String? Function(String?)? minuteValidator;
+  final IconData icon;
+  final double iconSize;
 
   const FormTimeField({
     super.key,
@@ -23,6 +25,8 @@ class FormTimeField extends StatefulWidget {
     this.onSaved,
     this.hourValidator,
     this.minuteValidator,
+    required this.icon,
+    required this.iconSize,
   });
 
   @override

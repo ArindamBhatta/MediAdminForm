@@ -25,7 +25,7 @@ extension VetAppSectionHelper on VetAppSection {
   IconData get icon {
     switch (this) {
       case VetAppSection.petOwners:
-        return FontAwesomeIcons.peopleGroup;
+        return FontAwesomeIcons.person;
 
       case VetAppSection.doctors:
         return FontAwesomeIcons.userDoctor;

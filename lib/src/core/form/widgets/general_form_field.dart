@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:web_ui_plugins/src/core/widgets/custom_textfield.dart';
+import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 class FormFieldView extends StatefulWidget {
   final String? initialValue;
@@ -52,6 +53,8 @@ class FormFieldView extends StatefulWidget {
     String? labelText,
     bool? enabled = true,
     bool? mandatory = true,
+    IconData? icon,
+    double? iconSize,
     TextCapitalization? textCapitalization,
     void Function(String?)? onChanged,
     void Function(String?)? onSaved,
@@ -65,6 +68,8 @@ class FormFieldView extends StatefulWidget {
       textCapitalization: textCapitalization ?? TextCapitalization.words,
       onSaved: onSaved,
       enabled: enabled,
+      icon: icon ?? FontAwesomeIcons.solidUser,
+      iconSize: iconSize ?? Globals.formFieldIconSize,
     );
   }
 
@@ -74,6 +79,8 @@ class FormFieldView extends StatefulWidget {
     String? labelText,
     bool? enabled = true,
     bool? mandatory = true,
+    IconData? icon,
+    double? iconSize,
     TextCapitalization? textCapitalization,
     void Function(String?)? onChanged,
     void Function(String?)? onSaved,
@@ -84,9 +91,9 @@ class FormFieldView extends StatefulWidget {
       labelText: labelText ?? 'Address',
       enabled: enabled,
       mandatory: mandatory,
-      icon: FontAwesomeIcons.locationDot,
+      icon: icon ?? FontAwesomeIcons.locationDot,
       keyboardType: TextInputType.streetAddress,
-      iconSize: 22,
+      iconSize: iconSize ?? Globals.formFieldIconSize,
       textCapitalization: textCapitalization ?? TextCapitalization.sentences,
       onChanged: onChanged,
       onSaved: onSaved,
@@ -99,6 +106,8 @@ class FormFieldView extends StatefulWidget {
     String? labelText,
     bool? enabled = true,
     bool? mandatory = true,
+    IconData? icon,
+    double? iconSize,
     void Function(String?)? onChanged,
     void Function(String?)? onSaved,
     bool Function(String)? isDuplicate,
@@ -109,9 +118,9 @@ class FormFieldView extends StatefulWidget {
       labelText: labelText ?? 'Mobile Number',
       enabled: enabled,
       mandatory: mandatory,
-      icon: FontAwesomeIcons.phone,
+      icon: icon ?? FontAwesomeIcons.phone,
       keyboardType: TextInputType.phone,
-      iconSize: 20,
+      iconSize: iconSize ?? Globals.formFieldIconSize,
       onChanged: onChanged,
       onSaved: onSaved,
       validate: (value) {
@@ -142,6 +151,8 @@ class FormFieldView extends StatefulWidget {
     void Function(String?)? onSaved,
     bool? enabled = true,
     bool? mandatory = true,
+    IconData? icon,
+    double? iconSize,
     String? labelText,
     bool Function(String)? isDuplicate,
   }) {
@@ -153,9 +164,9 @@ class FormFieldView extends StatefulWidget {
       labelText: labelText ?? 'WhatsApp Number',
       enabled: enabled,
       mandatory: mandatory,
-      icon: FontAwesomeIcons.whatsapp,
+      icon: icon ?? FontAwesomeIcons.whatsapp,
       keyboardType: TextInputType.phone,
-      iconSize: 20,
+      iconSize: iconSize ?? Globals.formFieldIconSize,
       validate: (value) {
         if (mandatory ?? true) {
           if (value == null || value.trim().isEmpty) {
@@ -185,6 +196,8 @@ class FormFieldView extends StatefulWidget {
     void Function(String?)? onSaved,
     bool? enabled = true,
     bool? mandatory = true,
+    IconData? icon,
+    double? iconSize,
     String? labelText,
     bool Function(String)? isDuplicate,
   }) {
@@ -197,9 +210,9 @@ class FormFieldView extends StatefulWidget {
       labelText: labelText ?? 'Email',
       enabled: enabled,
       mandatory: mandatory,
-      icon: FontAwesomeIcons.envelope,
+      icon: icon ?? FontAwesomeIcons.envelope,
       keyboardType: TextInputType.emailAddress,
-      iconSize: 18,
+      iconSize: iconSize ?? Globals.formFieldIconSize,
       validate: ((value) {
         if (mandatory ?? true) {
           if (value == null || value.trim().isEmpty) {
@@ -224,6 +237,8 @@ class FormFieldView extends StatefulWidget {
   factory FormFieldView.amount({
     Key? key,
     String? initialValue,
+    IconData? icon,
+    double? iconSize,
     void Function(String?)? onChanged,
     void Function(String?)? onSaved,
     bool? enabled = true,
@@ -238,9 +253,9 @@ class FormFieldView extends StatefulWidget {
       labelText: labelText ?? 'Amount',
       enabled: enabled,
       mandatory: mandatory,
-      icon: FontAwesomeIcons.rupeeSign,
+      icon: icon ?? FontAwesomeIcons.rupeeSign,
       keyboardType: TextInputType.numberWithOptions(decimal: true),
-      iconSize: 22,
+      iconSize: iconSize ?? Globals.formFieldIconSize,
     );
   }
 
@@ -248,6 +263,8 @@ class FormFieldView extends StatefulWidget {
     Key? key,
     String? initialValue,
     String? errorText,
+    IconData? icon,
+    double? iconSize,
     void Function(String?)? onChanged,
     void Function(String?)? onSaved,
     bool? enabled = true,
@@ -263,9 +280,9 @@ class FormFieldView extends StatefulWidget {
       labelText: labelText ?? 'Password',
       enabled: enabled,
       mandatory: mandatory,
-      icon: FontAwesomeIcons.lock,
+      icon: icon ?? FontAwesomeIcons.lock,
       keyboardType: TextInputType.visiblePassword,
-      iconSize: 20,
+      iconSize: iconSize ?? Globals.formFieldIconSize,
       isPassword: true,
     );
   }

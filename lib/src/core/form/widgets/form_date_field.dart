@@ -8,6 +8,8 @@ class FormDateField extends StatefulWidget {
   final bool? enabled;
   final bool keepTextVisible;
   final bool? mandatory;
+  final IconData? icon;
+  final double? iconSize;
 
   final void Function(String date)? onChanged;
   final void Function(String date)? onSaved;
@@ -32,6 +34,8 @@ class FormDateField extends StatefulWidget {
     this.dateRangeStartInDays,
     this.defaultDateInDays,
     this.onPickDate,
+    this.icon,
+    this.iconSize,
   });
 
   @override
@@ -128,7 +132,8 @@ class _FormDateFieldState extends State<FormDateField> {
           child: CustomTextField(
             textController: _dateController,
             labelText: widget.labelText ?? 'Date',
-            icon: FontAwesomeIcons.calendar,
+            icon: widget.icon ?? FontAwesomeIcons.calendar,
+            iconSize: widget.iconSize ?? Globals.formFieldIconSize,
             enabled: (widget.enabled ?? true) || widget.keepTextVisible,
             onSaved: _onSaved,
             validator: widget.validator ?? _defaultValidator,

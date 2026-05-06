@@ -20,42 +20,42 @@ class CustomizableSearchBar extends StatelessWidget {
           backgroundColor ??
           Theme.of(context).colorScheme.surfaceContainerLowest,
       height: Globals.formFieldHeight,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: TextField(
-          textInputAction: TextInputAction.search,
-          controller: controller,
-          textAlignVertical: TextAlignVertical.center, //centre
-          decoration: InputDecoration(
-            hintText: 'Search',
-            border: InputBorder.none,
-            isDense: true,
-            contentPadding: EdgeInsets.symmetric(vertical: 3),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.only(left: 6),
-              child: const Icon(Icons.search),
-            ),
-            suffixIcon: ValueListenableBuilder<TextEditingValue>(
-              valueListenable: controller,
-              builder: (context, value, child) {
-                final hasText = value.text.isNotEmpty;
-                return hasText
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          controller.clear();
-                          onChanged('');
-                        },
-                      )
-                    : const SizedBox.shrink();
-              },
-            ),
-            hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ), // Use bodyMedium for hint text style
+      child: TextField(
+        textInputAction: TextInputAction.search,
+        controller: controller,
+        textAlignVertical: TextAlignVertical.center, //centre
+        decoration: InputDecoration(
+          hintText: 'Search',
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(vertical: 3),
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 6),
+            child: const Icon(Icons.search),
           ),
-          onChanged: onChanged,
+          suffixIcon: ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
+            builder: (context, value, child) {
+              final hasText = value.text.isNotEmpty;
+              return hasText
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        controller.clear();
+                        onChanged('');
+                      },
+                    )
+                  : const SizedBox.shrink();
+            },
+          ),
+          hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Colors.grey,
+          ), // Use bodyMedium for hint text style
         ),
+        onChanged: onChanged,
       ),
     );
   }

@@ -11,7 +11,7 @@ class FormCubit<T extends DataModel> extends Cubit<FormViewState> {
   FormCubit({required this.repo}) : super(FromInitial());
 
   // Create
-  Future<void> createItem(T item) async {
+  Future<String> createItem(T item) async {
     emit(FormInProgress(operation: FormOperation.create));
 
     try {
@@ -23,6 +23,7 @@ class FormCubit<T extends DataModel> extends Cubit<FormViewState> {
       }
 
       emit(FormSuccess<T>(data: item, operation: FormOperation.create));
+      return newItemId;
     } catch (error) {
       emit(FormFailure(error: error.toString()));
       debugPrint('Error creating item: $error');

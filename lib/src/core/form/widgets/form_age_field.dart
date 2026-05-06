@@ -6,6 +6,8 @@ class FormAgeField extends StatefulWidget {
   final String? labelText;
   final bool? enabled;
   final bool? mandatory;
+  final IconData? icon;
+  final double? iconSize;
   final void Function((String year, String month, String day))? onSaved;
   final void Function(String year, String month, String day)? onChanged;
 
@@ -20,6 +22,8 @@ class FormAgeField extends StatefulWidget {
     this.labelText,
     this.enabled = true,
     this.mandatory = true,
+    this.icon,
+    this.iconSize,
     this.onSaved,
     this.onChanged,
     this.yearValidator,

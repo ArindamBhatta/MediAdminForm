@@ -101,6 +101,9 @@ class _FormPageViewState extends State<FormPageView> {
       _formData[key] = initialValue;
       _cloneFormData[key] = initialValue;
     }
+
+    _formData['id'] = widget.dataModel.uid;
+    _cloneFormData['id'] = widget.dataModel.uid;
     //  debugPrint('------ --- Initialized form data: $_formData');
 
     //--- Handle ListingWidgetConfig initial data
@@ -308,15 +311,24 @@ class _FormPageViewState extends State<FormPageView> {
           _formData['itemsId'] = [];
         }
 
+        final currentItemId = (_formData['id'] as String?)?.trim();
         DataModel formSubmittedDataModel = widget.rebuildDataModel(_formData);
 
         /// If uid is null, it's a new item, so we call createItem. Otherwise, it's an existing item, so we call updateItem with the index of the item being edited.
-        if (widget.dataModel.uid == null) {
-          await widget.formCubit.createItem(formSubmittedDataModel);
+        if (currentItemId == null || currentItemId.isEmpty) {
+          final createdId = await widget.formCubit.createItem(
+            formSubmittedDataModel,
+          );
+          debugPrint('Created item with ID: $createdId');
+
+          // Persist the created document ID locally so the next save uses update.
+          _formData['id'] = createdId;
+          _cloneFormData['id'] = createdId;
+          formSubmittedDataModel = widget.rebuildDataModel(_formData);
         } else {
           await widget.formCubit.updateItem(
             widget.formCubit.repo.items.indexWhere(
-              (item) => (item as DataModel?)?.uid == widget.dataModel.uid,
+              (item) => (item as DataModel?)?.uid == currentItemId,
             ),
             formSubmittedDataModel,
           );
@@ -472,10 +484,12 @@ class _FormPageViewState extends State<FormPageView> {
                                   CustomButton(
                                     text: isUndoMode
                                         ? "Reset"
-                                        : (widget.primaryButtonText ?? "Save"),
+                                        : (widget.primaryButtonText ??
+                                              "Update"),
                                     icon: isUndoMode
                                         ? Icons.restore_page_outlined
                                         : Icons.save_outlined,
+                                    height: Globals.buttonHeight,
                                     buttonState: saveButtonState,
                                     onPressed: () {
                                       final bool isUndoModeOnClick =
@@ -654,6 +668,8 @@ class _FormPageViewState extends State<FormPageView> {
       ///
       FieldType.time => FormTimeField(
         initialValue: initialValue,
+        icon: icon,
+        iconSize: iconSize,
         onChanged: (String hour, String minute, String period) {
           _formData[key] = _composeTimeForTracking(hour, minute, period);
           _onFieldChanged();
@@ -692,6 +708,8 @@ class _FormPageViewState extends State<FormPageView> {
         labelText: labelText,
         enabled: enabled,
         mandatory: mandatory,
+        icon: icon,
+        iconSize: iconSize,
       ),
 
       ///
@@ -708,6 +726,8 @@ class _FormPageViewState extends State<FormPageView> {
         enabled: enabled,
         mandatory: mandatory,
         textCapitalization: field.textCapitalization,
+        icon: icon,
+        iconSize: iconSize,
       ),
 
       ///
@@ -724,6 +744,8 @@ class _FormPageViewState extends State<FormPageView> {
         enabled: enabled,
         mandatory: mandatory,
         textCapitalization: field.textCapitalization,
+        icon: icon,
+        iconSize: iconSize,
       ),
 
       ///
@@ -740,6 +762,8 @@ class _FormPageViewState extends State<FormPageView> {
         enabled: enabled,
         mandatory: mandatory,
         isDuplicate: field.isDuplicate,
+        icon: icon,
+        iconSize: iconSize,
       ),
 
       ///
@@ -756,6 +780,8 @@ class _FormPageViewState extends State<FormPageView> {
         enabled: enabled,
         mandatory: mandatory,
         isDuplicate: field.isDuplicate,
+        icon: icon,
+        iconSize: iconSize,
       ),
 
       ///
@@ -772,6 +798,8 @@ class _FormPageViewState extends State<FormPageView> {
         enabled: enabled,
         mandatory: mandatory,
         isDuplicate: field.isDuplicate,
+        icon: icon,
+        iconSize: iconSize,
       ),
 
       ///
@@ -787,6 +815,8 @@ class _FormPageViewState extends State<FormPageView> {
         labelText: labelText.isEmpty ? 'Password' : labelText,
         enabled: enabled,
         mandatory: mandatory,
+        icon: icon,
+        iconSize: iconSize,
       ),
 
       ///
@@ -815,6 +845,8 @@ class _FormPageViewState extends State<FormPageView> {
           onPickDate: dateField?.onPickDateWithFormData != null
               ? () => dateField!.onPickDateWithFormData!.call(_formData)
               : dateField?.onPickDate,
+          icon: icon,
+          iconSize: iconSize,
         );
       })(),
 
@@ -831,6 +863,8 @@ class _FormPageViewState extends State<FormPageView> {
         labelText: labelText,
         enabled: enabled,
         mandatory: mandatory,
+        icon: icon,
+        iconSize: iconSize,
       ),
 
       ///

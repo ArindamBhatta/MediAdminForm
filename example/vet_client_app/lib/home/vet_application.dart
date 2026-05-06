@@ -18,8 +18,6 @@ class VetApplication extends StatelessWidget {
               const PluginLeftNavigation(
                 title: 'Vet Application',
                 width: 280,
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.textOnPrimary,
                 collapsedWidth: 56,
                 initiallyCollapsed: false,
                 showCollapseToggle: true,

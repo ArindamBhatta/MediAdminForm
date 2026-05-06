@@ -75,8 +75,6 @@ class _RightTooltipState extends State<_RightTooltip> {
 class PluginLeftNavigation extends StatefulWidget {
   final String? title;
   final double width;
-  final Color backgroundColor;
-  final Color foregroundColor;
   final double collapsedWidth;
   final bool initiallyCollapsed;
   final bool showCollapseToggle;
@@ -92,8 +90,6 @@ class PluginLeftNavigation extends StatefulWidget {
     this.width = 240,
     this.collapsedWidth = 56,
     this.initiallyCollapsed = false,
-    this.backgroundColor = Colors.blue,
-    this.foregroundColor = Colors.white,
     this.showCollapseToggle = true,
     this.showHeader = true,
     this.warnOnUnsavedChanges = true,

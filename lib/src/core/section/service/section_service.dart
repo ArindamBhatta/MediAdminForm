@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore_for_file: avoid_print
 
-import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 ///Service convert JSON → generic model
@@ -22,7 +22,8 @@ class SectionService<T extends DataModel> with FormServiceMixin<T> {
     ) {
       // Convert Firestore documents to T using _fromJson.
       final List<T> items = snapshot.docs.map((doc) {
-        final data = doc.data();
+        final data = Map<String, dynamic>.from(doc.data());
+        data['id'] ??= doc.id;
         return _fromJson(data);
       }).toList();
       // emitData function called the list of T through the stream.
@@ -30,7 +31,7 @@ class SectionService<T extends DataModel> with FormServiceMixin<T> {
     });
   }
 
-  //It is a Multiton (key-based singleton)
+  //It is (key-based singleton)
   factory SectionService(String collectionName, ModelFromJson<T> formJson) {
     // uniquely identify a service instance. SectionService<Product>('users')  → key = "users-Product"
     final String key =
@@ -49,11 +50,11 @@ class SectionService<T extends DataModel> with FormServiceMixin<T> {
   Future<String> create(T newItem) async {
     try {
       final Map<String, dynamic> data = newItem.toJson();
-
-      int nextId = await getNextCategoryId(_collectionName);
-      data['id'] = nextId.toString();
-      await _firestore.collection(_collectionName).add(data);
-      return data['id'] as String;
+      // Use Firestore's auto-generated doc ID instead of manual sequential IDs
+      final docRef = _firestore.collection(_collectionName).doc();
+      data['id'] ??= docRef.id;
+      await docRef.set(data);
+      return docRef.id;
     } catch (error) {
       throw Exception('Failed to create item: $error');
     }
@@ -65,7 +66,11 @@ class SectionService<T extends DataModel> with FormServiceMixin<T> {
     try {
       final snapshot = await _firestore.collection(_collectionName).get();
 
-      final item = snapshot.docs.map((doc) => _fromJson(doc.data())).toList();
+      final item = snapshot.docs.map((doc) {
+        final data = Map<String, dynamic>.from(doc.data());
+        data['id'] ??= doc.id;
+        return _fromJson(data);
+      }).toList();
       return item;
     } catch (error) {
       throw Exception('Failed to read items: $error');
@@ -75,27 +80,18 @@ class SectionService<T extends DataModel> with FormServiceMixin<T> {
   @override
   Future<T> update(T updateItem) async {
     try {
-      final id = (updateItem as dynamic).id;
+      final dynamic item = updateItem;
+      final id = item.id ?? item.uid;
       if (id == null || id.isEmpty) {
         throw Exception("Item id can't be null for Update operation");
       }
 
-      final query = await _firestore
-          .collection(_collectionName)
-          .where('id', isEqualTo: id)
-          .limit(1)
-          .get();
-      if (query.docs.isEmpty) {
-        throw Exception("No item found with id $id");
-      }
-      final fireStoreDocId = query.docs.first.id;
+      // Use Firestore doc ID directly instead of searching by 'id' field
       final data = updateItem.toJson();
-      await _firestore
-          .collection(_collectionName)
-          .doc(fireStoreDocId)
-          .update(data);
+      await _firestore.collection(_collectionName).doc(id).update(data);
       return updateItem;
     } catch (error) {
+      print('Update error for $_collectionName: $error');
       throw Exception('Failed to update item: $error');
     }
   }
@@ -103,39 +99,18 @@ class SectionService<T extends DataModel> with FormServiceMixin<T> {
   @override
   Future<T> delete(T item) async {
     try {
-      final id = (item as dynamic).id;
+      final dynamic deletableItem = item;
+      final id = deletableItem.id ?? deletableItem.uid;
       if (id == null || id.isEmpty) {
         throw Exception("Item id can't be null for Delete operation");
       }
-      final query = await _firestore
-          .collection(_collectionName)
-          .where('id', isEqualTo: id)
-          .limit(1)
-          .get();
-      if (query.docs.isEmpty) {
-        throw Exception("No item found with id $id");
-      }
-      final fireStoreDocId = query.docs.first.id;
-      await _firestore.collection(_collectionName).doc(fireStoreDocId).delete();
+
+      // Use Firestore doc ID directly instead of searching by 'id' field
+      await _firestore.collection(_collectionName).doc(id).delete();
       return item;
     } catch (error) {
+      print('Delete error for $_collectionName: $error');
       throw Exception('Failed to delete item: $error');
-    }
-  }
-
-  //custom ID increment system through a Cloud Function.
-  Future<int> getNextCategoryId(String category) async {
-    try {
-      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable(
-        'getNextCategoryId',
-      );
-
-      final result = await callable.call(<String, dynamic>{
-        'category': category,
-      });
-      return result.data['nextId'] as int;
-    } on Exception catch (error) {
-      throw Exception('Failed to fetch next category ID: $error');
     }
   }
 }
