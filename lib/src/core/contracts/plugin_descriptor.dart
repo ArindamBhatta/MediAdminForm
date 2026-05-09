@@ -3,14 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
 import 'package:web_ui_plugins/src/core/contracts/permission_contract.dart';
 
-/// Core contracts and descriptors that plugin authors implement to onboard new modules into the app shell.
-///  The goal is: 👉 allow developers to add new modules/features into the app shell without modifying the core app.
-
 //1.PluginRouteBuilder is a function type that defines how to build a widget for a given route, using the current BuildContext and GoRouterState.
 typedef PluginRouteBuilder =
     Widget Function(BuildContext context, GoRouterState state);
 
-/// Declares which optional framework capabilities a plugin uses.
+///Step 1: PluginFeatureFlags is a simple class that groups together boolean flags indicating(CRUD, realtime updates, file uploads).
 class PluginFeatureFlags {
   final bool supportsCrud;
   final bool supportsRealtime;
@@ -23,15 +20,13 @@ class PluginFeatureFlags {
   });
 }
 
-/// Describes a single route a plugin contributes to the app shell.
+///Step 2: PluginRouteDescriptor Describes a single route a plugin contributes to the app shell.
 class PluginRouteDescriptor {
-  final String? name;
   final String path;
   final PluginRouteBuilder builder;
   final PermissionPolicy? accessPolicy;
 
   const PluginRouteDescriptor({
-    this.name,
     required this.path,
     required this.builder,
     this.accessPolicy,
@@ -54,7 +49,7 @@ class PluginDataBinding<T extends DataModel> {
 /// The top-level descriptor a developer provides to register a plugin.
 /// This is the entire surface area a module author fills in.
 class PluginDescriptor<T extends DataModel> {
-  /// Stable unique identifier for this plugin (e.g. 'staff', 'clients').
+  /// Stable unique identifier.
   final String moduleId;
 
   /// Display metadata shown in sidebar and headers.
@@ -63,7 +58,7 @@ class PluginDescriptor<T extends DataModel> {
   final Color color;
   final int order;
 
-  /// Which feature groups this plugin uses.
+  /// Enable or disable features like CRUD, realtime updates, and file uploads.
   final PluginFeatureFlags features;
 
   /// Routes this plugin contributes.

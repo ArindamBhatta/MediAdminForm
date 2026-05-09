@@ -2,17 +2,9 @@
 class UserIdentity {
   final String userId;
   final String? email;
-  final String persona; // e.g. 'manager', 'operator', 'admin'
-  final String? tenantId;
-  final Set<String> featureFlags;
+  final String persona;
 
-  const UserIdentity({
-    required this.userId,
-    required this.persona,
-    this.email,
-    this.tenantId,
-    this.featureFlags = const {},
-  });
+  const UserIdentity({required this.userId, required this.persona, this.email});
 }
 
 /// Context passed to every permission evaluation.
@@ -57,10 +49,7 @@ class PersonaPermissionPolicy implements PermissionPolicy {
   final Set<String> allowedPersonas;
   final String? denyReason;
 
-  const PersonaPermissionPolicy(
-    this.allowedPersonas, {
-    this.denyReason,
-  });
+  const PersonaPermissionPolicy(this.allowedPersonas, {this.denyReason});
 
   @override
   PermissionResult evaluate(PermissionContext context) {
@@ -73,7 +62,8 @@ class PersonaPermissionPolicy implements PermissionPolicy {
       return const PermissionResult.granted();
     }
     return PermissionResult.denied(
-      denyReason ?? 'Role ${context.user.persona} cannot access ${context.moduleId}',
+      denyReason ??
+          'Role ${context.user.persona} cannot access ${context.moduleId}',
     );
   }
 }

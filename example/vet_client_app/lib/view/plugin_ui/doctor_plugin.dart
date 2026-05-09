@@ -25,7 +25,7 @@ doctorsPlugin = PluginDescriptor<DoctorModel>(
 
   visibilityPolicy: PersonaPermissionPolicy({
     VetApplicationEnums.admin.label,
-    VetApplicationEnums.manager.label,
+    VetApplicationEnums.operator.label,
   }),
 
   dataBinding: PluginDataBinding<DoctorModel>(
@@ -49,22 +49,6 @@ class DoctorsSectionPage extends StatelessWidget {
   final String? initialSelectedItemId;
 
   const DoctorsSectionPage({super.key, this.initialSelectedItemId});
-
-  SectionRepo<DoctorModel> _resolveRepo(BuildContext context) {
-    try {
-      return RepositoryProvider.of<SectionRepo<DoctorModel>>(context);
-    } catch (_) {
-      final binding = doctorsPlugin.dataBinding;
-      return SectionRepo<DoctorModel>(
-        moduleId: doctorsPlugin.moduleId,
-        service: FirestoreService<DoctorModel>(
-          moduleId: doctorsPlugin.moduleId,
-          collectionName: binding.collectionName,
-          fromJson: binding.fromJson,
-        ),
-      );
-    }
-  }
 
   Widget _buildSection(BuildContext context, SectionRepo<DoctorModel> repo) {
     final cubit = BlocProvider.of<FormCubit<DoctorModel>>(context);
@@ -179,21 +163,15 @@ class DoctorsSectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final repo = _resolveRepo(context);
-    FormCubit<DoctorModel>? existingCubit;
     try {
-      existingCubit = BlocProvider.of<FormCubit<DoctorModel>>(context);
+      final cubit = BlocProvider.of<FormCubit<DoctorModel>>(context);
+      return _buildSection(context, cubit.repo as SectionRepo<DoctorModel>);
     } catch (_) {
-      existingCubit = null;
+      final repo = SectionRepo<DoctorModel>.fromDescriptor(doctorsPlugin);
+      return BlocProvider<FormCubit<DoctorModel>>(
+        create: (_) => FormCubit<DoctorModel>(repo: repo),
+        child: Builder(builder: (ctx) => _buildSection(ctx, repo)),
+      );
     }
-
-    if (existingCubit != null) {
-      return _buildSection(context, repo);
-    }
-
-    return BlocProvider<FormCubit<DoctorModel>>(
-      create: (_) => FormCubit<DoctorModel>(repo: repo),
-      child: Builder(builder: (ctx) => _buildSection(ctx, repo)),
-    );
   }
 }

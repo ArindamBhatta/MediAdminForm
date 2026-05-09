@@ -57,19 +57,15 @@ extension VetAppSectionHelper on VetAppSection {
 }
 
 // ── Persona / Role enum ───────────────────────────────────────────────────────
-enum VetApplicationEnums { admin, manager, stylist, receptionist }
+enum VetApplicationEnums { admin, operator }
 
 extension VetApplicationEnumsX on VetApplicationEnums {
   String get label {
     switch (this) {
       case VetApplicationEnums.admin:
         return 'Admin';
-      case VetApplicationEnums.manager:
-        return 'Manager';
-      case VetApplicationEnums.stylist:
-        return 'Stylist';
-      case VetApplicationEnums.receptionist:
-        return 'Receptionist';
+      case VetApplicationEnums.operator:
+        return 'Operator';
     }
   }
 }

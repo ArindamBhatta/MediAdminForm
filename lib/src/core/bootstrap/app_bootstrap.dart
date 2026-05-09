@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:web_ui_plugins/src/adapters/firebase/scoped_repo.dart';
+import 'package:web_ui_plugins/src/adapters/firebase/section_repo.dart';
 import 'package:web_ui_plugins/src/core/contracts/permission_contract.dart';
 import 'package:web_ui_plugins/src/core/contracts/plugin_descriptor.dart';
 import 'package:web_ui_plugins/src/core/contracts/upload_contract.dart';
@@ -65,38 +65,11 @@ class AppBootstrap {
     }
   }
 
-  /// Step 3: Build the root widget with all repository providers injected, and the router configured from registered plugins.
-  static Widget buildApp({
-    required Widget shell,
-    ThemeData? theme,
-    ThemeData? darkTheme,
-    ThemeMode? themeMode,
-  }) {
-    final List<RepositoryProvider> providers = _buildProviders();
-    return MultiRepositoryProvider(
-      providers: providers,
-      child: Builder(
-        builder: (context) {
-          final cubits = _buildCubits(context);
-          return MultiBlocProvider(
-            providers: cubits,
-            child: MaterialApp(
-              theme: theme,
-              darkTheme: darkTheme,
-              themeMode: themeMode,
-              home: shell,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   static Widget buildRouterApp({
     ThemeData? theme,
     ThemeData? darkTheme,
     ThemeMode? themeMode,
-    String title = '',
+    String? title,
     String? initialLocation,
     WidgetBuilder? forbiddenBuilder,
     WidgetBuilder? noPluginsBuilder,
@@ -206,7 +179,6 @@ class AppBootstrap {
         routes.add(
           GoRoute(
             path: route.path,
-            name: route.name ?? '${descriptor.moduleId}_$index',
             redirect: (_, state) {
               final canAccess = PermissionMiddleware.instance.canAccessRoute(
                 descriptor.moduleId,

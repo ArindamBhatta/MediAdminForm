@@ -19,16 +19,14 @@ petOwnerPlugin = PluginDescriptor<PetOwnerModel>(
   /// Optional feature flags that the framework can use to conditionally enable/disable functionality. The plugin author declares which features they use, and the framework handles the rest.
   features: const PluginFeatureFlags(
     supportsCrud: true,
-    supportsRealtime: true,
     supportsUpload: true,
+    supportsRealtime: true,
   ),
 
   // All personas can view clients section, but only admin and manager can edit (enforced in the UI and in the API).
   visibilityPolicy: PersonaPermissionPolicy({
     VetApplicationEnums.admin.label,
-    VetApplicationEnums.manager.label,
-    VetApplicationEnums.receptionist.label,
-    VetApplicationEnums.stylist.label,
+    VetApplicationEnums.operator.label,
   }),
 
   /// Data binding: collection, serializer, empty factory. The framework uses this to generate a repo and sync with Firestore. The plugin author only writes the model and the fromJson logic, and the framework handles the rest.
@@ -42,33 +40,17 @@ petOwnerPlugin = PluginDescriptor<PetOwnerModel>(
   routes: [
     PluginRouteDescriptor(
       path: '/pet-owners', //GoRouter path
-      builder: (BuildContext ctx, GoRouterState state) => ClientSectionPage(
+      builder: (BuildContext ctx, GoRouterState state) => PetOwnerPluginPage(
         initialSelectedItemId: state.uri.queryParameters['selected'],
       ),
     ),
   ],
 );
 
-class ClientSectionPage extends StatelessWidget {
+class PetOwnerPluginPage extends StatelessWidget {
   final String? initialSelectedItemId;
 
-  const ClientSectionPage({super.key, this.initialSelectedItemId});
-
-  SectionRepo<PetOwnerModel> _resolveRepo(BuildContext context) {
-    try {
-      return RepositoryProvider.of<SectionRepo<PetOwnerModel>>(context);
-    } catch (_) {
-      final binding = petOwnerPlugin.dataBinding;
-      return SectionRepo<PetOwnerModel>(
-        moduleId: petOwnerPlugin.moduleId,
-        service: FirestoreService<PetOwnerModel>(
-          moduleId: petOwnerPlugin.moduleId,
-          collectionName: binding.collectionName,
-          fromJson: binding.fromJson,
-        ),
-      );
-    }
-  }
+  const PetOwnerPluginPage({super.key, this.initialSelectedItemId});
 
   Widget _buildSection(BuildContext context, SectionRepo<PetOwnerModel> repo) {
     final cubit = BlocProvider.of<FormCubit<PetOwnerModel>>(context);
@@ -157,21 +139,20 @@ class ClientSectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SectionRepo<PetOwnerModel> repo = _resolveRepo(context);
-    FormCubit<PetOwnerModel>? existingCubit;
     try {
-      existingCubit = BlocProvider.of<FormCubit<PetOwnerModel>>(context);
+      //Step 1: Try to get the repo from the context. If this page is being navigated to from within the plugin, the repo will already be in the context, so we can just use it.
+      final FormCubit<PetOwnerModel> cubit =
+          BlocProvider.of<FormCubit<PetOwnerModel>>(context);
+
+      return _buildSection(context, cubit.repo as SectionRepo<PetOwnerModel>);
     } catch (_) {
-      existingCubit = null;
-    }
+      // Step 2: If the repo is not in the context, it means this page is being navigated to directly (e.g. by typing the URL or from another plugin), so we need to create the repo ourselves using the plugin descriptor.
+      final repo = SectionRepo<PetOwnerModel>.fromDescriptor(petOwnerPlugin);
 
-    if (existingCubit != null) {
-      return _buildSection(context, repo);
+      return BlocProvider<FormCubit<PetOwnerModel>>(
+        create: (_) => FormCubit<PetOwnerModel>(repo: repo),
+        child: Builder(builder: (ctx) => _buildSection(ctx, repo)),
+      );
     }
-
-    return BlocProvider<FormCubit<PetOwnerModel>>(
-      create: (_) => FormCubit<PetOwnerModel>(repo: repo),
-      child: Builder(builder: (ctx) => _buildSection(ctx, repo)),
-    );
   }
 }

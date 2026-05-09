@@ -5,7 +5,7 @@ library;
 
 import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
 import 'package:web_ui_plugins/src/adapters/firebase/firestore_service.dart';
-import 'package:web_ui_plugins/src/adapters/firebase/scoped_repo.dart';
+import 'package:web_ui_plugins/src/adapters/firebase/section_repo.dart';
 
 typedef SectionService<T extends DataModel> = FirestoreService<T>;
 

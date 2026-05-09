@@ -20,6 +20,7 @@ class FirestoreService<T extends DataModel> with FormServiceMixin<T> {
   final String _collectionName;
   final ModelFromJson<T> _fromJson;
   final String moduleId;
+  final bool supportsRealtime;
 
   /// Exposed so ScopedRepo can derive the registry key without reflection.
   String get collectionName => _collectionName;
@@ -28,14 +29,22 @@ class FirestoreService<T extends DataModel> with FormServiceMixin<T> {
     required this.moduleId,
     required String collectionName,
     required ModelFromJson<T> fromJson,
+    this.supportsRealtime = true,
   }) : _collectionName = collectionName,
        _fromJson = fromJson {
-    _firestore.collection(_collectionName).snapshots().listen((
-      QuerySnapshot<Map<String, dynamic>> snapshot,
-    ) {
-      final items = snapshot.docs.map((doc) => _fromJson(doc.data())).toList();
-      emitData(items);
-    });
+    if (supportsRealtime) {
+      _firestore.collection(_collectionName).snapshots().listen((
+        QuerySnapshot<Map<String, dynamic>> snapshot,
+      ) {
+        final items = snapshot.docs
+            .map((doc) => _fromJson(doc.data()))
+            .toList();
+        emitData(items);
+      });
+    } else {
+      // If realtime is disabled, we do a one-time fetch to populate the initial state
+      readAll().then((items) => emitData(items));
+    }
   }
 
   /// Scoped factory: one instance per (moduleId, T, collectionName) triple.
@@ -43,6 +52,7 @@ class FirestoreService<T extends DataModel> with FormServiceMixin<T> {
     required String moduleId,
     required String collectionName,
     required ModelFromJson<T> fromJson,
+    bool supportsRealtime = true,
   }) {
     final key = ScopedKey(
       moduleId: moduleId,
@@ -55,6 +65,7 @@ class FirestoreService<T extends DataModel> with FormServiceMixin<T> {
             moduleId: moduleId,
             collectionName: collectionName,
             fromJson: fromJson,
+            supportsRealtime: supportsRealtime,
           ),
         )
         as FirestoreService<T>;

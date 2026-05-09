@@ -33,6 +33,7 @@ void main() async {
 
     // Step 3: -builds the app with the router and plugin-generated shell.
     runApp(
+      /// when we call AppBootstrap.buildRouterApp, the framework creates a GoRouter instance.
       AppBootstrap.buildRouterApp(
         title: 'Vet Client App',
         theme: AppTheme.lightTheme.copyWith(
@@ -42,6 +43,9 @@ void main() async {
         ),
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
+
+        // The shellBuilder we provided acts as a wrapper for every page in this app.
+        //when a user navigates to a route (like /pet-owners), GoRouter takes the PetOwnerPluginPage and passes it as the child argument to your VetApplication.
         shellBuilder: (context, child) => VetApplication(child: child),
       ),
     );

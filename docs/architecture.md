@@ -41,7 +41,7 @@ lib/
     │   ├── contracts/           ← backend-agnostic interfaces + shared config
     │   │   ├── data_model.dart          ← DataModel base class
     │   │   ├── form_service_mixin.dart  ← CRUD interface + broadcast stream
-    │   │   ├── plugin_descriptor.dart   ← PluginDescriptor, PluginDataBinding, PluginFeatureFlags
+    │   │   ├── plugin_descriptor.dart   ← Main Dependency -> PluginFeatureFlags, PluginDataBinding, PluginRouteDescriptor
     │   │   ├── permission_contract.dart ← UserIdentity, PermissionPolicy, PersonaPermissionPolicy
     │   │   ├── upload_contract.dart     ← UploadCapability, UploadResult, UploadConfig
     │   │   ├── globals.dart             ← shared UI constants (form sizes, padding)
