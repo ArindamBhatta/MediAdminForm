@@ -95,6 +95,7 @@ class ClientSectionPage extends StatelessWidget {
       initialTabDetailBuilder: (item, ctx) => FormPageView(
         formCubit: BlocProvider.of<FormCubit<PetOwnerModel>>(ctx),
         dataModel: item,
+        supportsCrud: petOwnerPlugin.features.supportsCrud,
         fields: [
           WidgetConfig(
             key: 'name',

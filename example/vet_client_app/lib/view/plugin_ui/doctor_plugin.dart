@@ -9,39 +9,39 @@ import '../../domain/models/doctor_model.dart';
 
 /// Doctors plugin descriptor.
 /// This is the entire surface area the developer fills in to add a new section.
-final PluginDescriptor<DoctorModel> doctorsPlugin =
-    PluginDescriptor<DoctorModel>(
-      moduleId: 'doctors',
-      title: VetAppSection.doctors.label,
-      icon: VetAppSection.doctors.icon,
-      color: VetAppSection.doctors.color,
-      order: VetAppSection.doctors.order,
-      features: const PluginFeatureFlags(
-        supportsCrud: true,
-        supportsRealtime: true,
-        supportsUpload: true, // profile photo
-      ),
+final PluginDescriptor<DoctorModel>
+doctorsPlugin = PluginDescriptor<DoctorModel>(
+  moduleId: 'doctors',
+  title: VetAppSection.doctors.label,
+  icon: VetAppSection.doctors.icon,
+  color: VetAppSection.doctors.color,
+  order: VetAppSection.doctors.order,
+  // Optional feature flags that the framework can use to conditionally enable/disable functionality. The plugin author declares which features they use, and the framework handles the rest.
+  features: const PluginFeatureFlags(
+    supportsCrud: true,
+    supportsRealtime: true,
+    supportsUpload: true,
+  ),
 
-      visibilityPolicy: PersonaPermissionPolicy({
-        VetApplicationEnums.admin.label,
-        VetApplicationEnums.manager.label,
-      }),
+  visibilityPolicy: PersonaPermissionPolicy({
+    VetApplicationEnums.admin.label,
+    VetApplicationEnums.manager.label,
+  }),
 
-      dataBinding: PluginDataBinding<DoctorModel>(
-        collectionName: 'doctors', // Firestore collection name
-        fromJson: DoctorModel.fromJson,
-        createEmpty: DoctorModel.new,
+  dataBinding: PluginDataBinding<DoctorModel>(
+    collectionName: 'doctors', // Firestore collection name
+    fromJson: DoctorModel.fromJson,
+    createEmpty: DoctorModel.new,
+  ),
+  routes: [
+    PluginRouteDescriptor(
+      path: '/doctors', // Navigates
+      builder: (BuildContext ctx, GoRouterState state) => DoctorsSectionPage(
+        initialSelectedItemId: state.uri.queryParameters['selected'],
       ),
-      routes: [
-        PluginRouteDescriptor(
-          path: '/doctors', // Navigates
-          builder: (BuildContext ctx, GoRouterState state) =>
-              DoctorsSectionPage(
-                initialSelectedItemId: state.uri.queryParameters['selected'],
-              ),
-        ),
-      ],
-    );
+    ),
+  ],
+);
 
 /// Doctors section page — the developer writes this view.
 /// The framework handles data, state, list, form, and dialog.
@@ -77,6 +77,8 @@ class DoctorsSectionPage extends StatelessWidget {
       repo: repo,
       formCubit: cubit,
       initialSelectedItemId: initialSelectedItemId,
+      // If SectionWidget supported this flag, you would pass it here to hide the FAB/Add button
+      // supportsCrud: doctorsPlugin.features.supportsCrud,
       createEmptyModel: DoctorModel.new,
 
       rebuildDataModel: (data) => DoctorModel(
@@ -95,6 +97,7 @@ class DoctorsSectionPage extends StatelessWidget {
       initialTabDetailBuilder: (item, ctx) => FormPageView(
         formCubit: BlocProvider.of<FormCubit<DoctorModel>>(ctx),
         dataModel: item,
+        supportsCrud: doctorsPlugin.features.supportsCrud,
         fields: [
           WidgetConfig(
             key: 'name',

@@ -34,6 +34,7 @@ class FormPageView extends StatefulWidget {
   final String? cancelButtonText;
   final VoidCallback? onCancel;
   final VoidCallback? onSaveSuccess;
+  final bool supportsCrud;
 
   const FormPageView({
     super.key,
@@ -46,6 +47,7 @@ class FormPageView extends StatefulWidget {
     this.cancelButtonText,
     this.onCancel,
     this.onSaveSuccess,
+    this.supportsCrud = true,
   });
 
   @override
@@ -438,7 +440,8 @@ class _FormPageViewState extends State<FormPageView> {
                                 cancelButtonState = ButtonState.disabled;
                               } else {
                                 /// Disable update button if true data mismatch
-                                saveButtonState = _isDataMismatch
+                                saveButtonState =
+                                    (_isDataMismatch && widget.supportsCrud)
                                     ? ButtonState.enabled
                                     : ButtonState.disabled;
                                 cancelButtonState = ButtonState.enabled;
@@ -544,7 +547,7 @@ class _FormPageViewState extends State<FormPageView> {
     final key = field.key;
     final initialValue = field.initialValue;
     final labelText = field.labelText ?? '';
-    final enabled = field.enabled;
+    final enabled = (field.enabled ?? true) && widget.supportsCrud;
     final mandatory = field.mandatory;
     final icon = field.icon ?? Icons.text_fields_sharp;
     final iconSize = field.iconSize ?? 20.0;

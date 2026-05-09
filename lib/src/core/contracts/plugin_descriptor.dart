@@ -4,9 +4,9 @@ import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
 import 'package:web_ui_plugins/src/core/contracts/permission_contract.dart';
 
 /// Core contracts and descriptors that plugin authors implement to onboard new modules into the app shell.
-///  These are the only plugins-specific classes a plugin author interacts with when building a new section.
+///  The goal is: 👉 allow developers to add new modules/features into the app shell without modifying the core app.
 
-//1.PluginRouteBuilder is a function type that defines how to build a widget for a given route, using the current BuildContext and GoRouterState. This allows plugins to contribute new routes to the app shell with custom UI and logic.
+//1.PluginRouteBuilder is a function type that defines how to build a widget for a given route, using the current BuildContext and GoRouterState.
 typedef PluginRouteBuilder =
     Widget Function(BuildContext context, GoRouterState state);
 

@@ -24,9 +24,10 @@ class PluginRegistry {
   Future<void> register<T extends DataModel>(
     PluginDescriptor<T> descriptor,
   ) async {
-    final alreadyExists = _plugins.any(
+    final bool alreadyExists = _plugins.any(
       (p) => p.descriptor.moduleId == descriptor.moduleId,
     );
+
     if (alreadyExists) return; // idempotent on hot reload
 
     await descriptor.onRegister?.call();
