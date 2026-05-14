@@ -12,9 +12,7 @@ class Globals {
   static double formFieldBorderFocusWidth = 2.0;
   static double sidePadding = 16.0;
   static double topBarHeight = 50.0;
-
   static double buttonHeight = 40.0;
-
   // Tracks whether the currently active form has unsaved edits.
   static bool hasUnsavedFormChanges = false;
 }

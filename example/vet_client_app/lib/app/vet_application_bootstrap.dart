@@ -80,7 +80,8 @@ class VetApplicationBootstrap {
             //Use other emulators as needed, e.g. Storage emulator on 9199
           }
         },
-        defaultPermissionPolicy: const OpenPermissionPolicy(),
+        defaultPermissionPolicy:
+            const OpenDefaultDevelopmentPolicy(), // Use a permissive policy for development. Replace with real policies in production.
       ),
     );
 

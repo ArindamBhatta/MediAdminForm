@@ -1,20 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
-import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
-import 'package:web_ui_plugins/src/core/form/service/form_service_mixin.dart';
-import 'package:web_ui_plugins/src/core/registry/scoped_registry.dart';
+import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 typedef ModelFromJson<T> = T Function(Map<String, dynamic>);
 
 /// Firebase Firestore implementation of [FormServiceMixin].
 ///
 /// Key change from old SectionService:
-/// - Instances are keyed by [ScopedKey] (moduleId + modelType + collection)
+/// - Instances are keyed by [CrossModuleSingletonKey] (moduleId + modelType + collection)
 ///   instead of the old global "collection-Type" string, preventing
 ///   cross-module singleton collisions.
 class FirestoreService<T extends DataModel> with FormServiceMixin<T> {
-  static final ScopedRegistry<FirestoreService> _registry =
-      ScopedRegistry<FirestoreService>();
+  static final SingletonScopedRegistry<FirestoreService> _registry =
+      SingletonScopedRegistry<FirestoreService>();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _collectionName;
@@ -54,11 +52,12 @@ class FirestoreService<T extends DataModel> with FormServiceMixin<T> {
     required ModelFromJson<T> fromJson,
     bool supportsRealtime = true,
   }) {
-    final key = ScopedKey(
+    final key = CrossModuleSingletonKey(
       moduleId: moduleId,
       modelType: T.toString(),
       collection: collectionName,
     );
+
     return _registry.getOrCreate(
           key,
           () => FirestoreService<T>._internal(

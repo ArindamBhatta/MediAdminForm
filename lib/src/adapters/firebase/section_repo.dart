@@ -1,9 +1,4 @@
-import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
-import 'package:web_ui_plugins/src/core/contracts/plugin_descriptor.dart';
-import 'package:web_ui_plugins/src/core/form/service/form_service_mixin.dart';
-import 'package:web_ui_plugins/src/core/form/repo/form_repo_mixin.dart';
-import 'package:web_ui_plugins/src/core/registry/scoped_registry.dart';
-import 'package:web_ui_plugins/src/adapters/firebase/firestore_service.dart';
+import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 /// Scoped repository: replaces old SectionRepo with a registry keyed by
 /// (moduleId + modelType + collection) instead of just (Type).
@@ -11,8 +6,8 @@ import 'package:web_ui_plugins/src/adapters/firebase/firestore_service.dart';
 /// This prevents cross-module collisions when two plugins use the same model
 /// type but different collections.
 class SectionRepo<T extends DataModel> with FormRepoMixin<T> {
-  static final ScopedRegistry<SectionRepo> _registry =
-      ScopedRegistry<SectionRepo>();
+  static final SingletonScopedRegistry<SectionRepo> _registry =
+      SingletonScopedRegistry<SectionRepo>();
 
   final String moduleId;
 
@@ -33,11 +28,12 @@ class SectionRepo<T extends DataModel> with FormRepoMixin<T> {
     final collectionName =
         (service as dynamic).collectionName as String? ?? T.toString();
 
-    final key = ScopedKey(
+    final key = CrossModuleSingletonKey(
       moduleId: moduleId,
       modelType: T.toString(),
       collection: collectionName,
     );
+
     return _registry.getOrCreate(
           key,
           () => SectionRepo<T>._internal(moduleId: moduleId, service: service),
@@ -48,7 +44,7 @@ class SectionRepo<T extends DataModel> with FormRepoMixin<T> {
   /// Convenience factory to build a repo directly from a [PluginDescriptor].
   /// This ensures that feature flags (like supportsRealtime) are respected
   /// from a single source of truth.
-  factory SectionRepo.fromDescriptor(PluginDescriptor<T> descriptor) {
+  factory SectionRepo.fromDescriptor(DefaultPluginDescription<T> descriptor) {
     final binding = descriptor.dataBinding;
     return SectionRepo<T>(
       moduleId: descriptor.moduleId,

@@ -12,12 +12,12 @@ library;
 // ── Core contracts ────────────────────────────────────────────────────────────
 export 'src/core/contracts/data_model.dart';
 export 'src/core/form/service/form_service_mixin.dart';
-export 'src/core/contracts/plugin_descriptor.dart';
+export 'src/core/contracts/default_plugin_description.dart';
 export 'src/core/contracts/permission_contract.dart';
 export 'src/core/contracts/upload_contract.dart';
 
 // ── Registry ─────────────────────────────────────────────────────────────────
-export 'src/core/registry/scoped_registry.dart';
+export 'src/core/registry/singleton_scoped_registry.dart';
 export 'src/core/registry/plugin_registry.dart';
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────

@@ -1,74 +1,83 @@
-import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
-import 'package:web_ui_plugins/src/core/contracts/permission_contract.dart';
-import 'package:web_ui_plugins/src/core/contracts/plugin_descriptor.dart';
+import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 /// Resolved and active plugin entry, stored after successful registration.
 class RegisteredPlugin<T extends DataModel> {
-  final PluginDescriptor<T> descriptor;
+  final DefaultPluginDescription<T> description;
   final DateTime registeredAt;
 
-  RegisteredPlugin(this.descriptor) : registeredAt = DateTime.now();
+  RegisteredPlugin(this.description) : registeredAt = DateTime.now();
 }
 
-/// Central plugin registry.
 /// All plugins register here during bootstrap; the app shell reads from here
 /// to generate sidebar entries, route tables, and permission checks.
 class PluginRegistry {
   PluginRegistry._();
+
+  /// Singleton instance.
   static final PluginRegistry instance = PluginRegistry._();
 
+  /// Internal list of registered plugins.
   final List<RegisteredPlugin> _plugins = [];
 
-  /// Register a plugin. Throws if a plugin with the same [moduleId] is
-  /// already registered (guards against double-registration on hot reload).
+  /// Register a plugin. Throws if a plugin with the same [moduleId] is already registered (guards against double-registration on hot reload).
   Future<void> register<T extends DataModel>(
-    PluginDescriptor<T> descriptor,
+    DefaultPluginDescription<T> aggPlugin,
   ) async {
     final bool alreadyExists = _plugins.any(
-      (p) => p.descriptor.moduleId == descriptor.moduleId,
+      (plugin) => plugin.description.moduleId == aggPlugin.moduleId,
     );
 
-    if (alreadyExists) return; // idempotent on hot reload
+    if (alreadyExists) return; // No Change idempotent
 
-    await descriptor.onRegister?.call();
-    _plugins.add(RegisteredPlugin<T>(descriptor));
+    /// Call the plugin's onRegister callback if it exists, allowing it to perform
+    await aggPlugin.onRegister?.call();
+
+    ///add the plugin to the registry after successful registration
+    _plugins.add(RegisteredPlugin<T>(aggPlugin));
   }
 
   /// Unregister a plugin by moduleId (used in tests or dynamic plugin removal).
+  // Todo: Not yet utilized.
   Future<void> unregister(String moduleId) async {
     final plugin = _plugins.cast<RegisteredPlugin?>().firstWhere(
-      (p) => p?.descriptor.moduleId == moduleId,
+      (plugin) => plugin?.description.moduleId == moduleId,
       orElse: () => null,
     );
+
+    ///
     if (plugin == null) return;
-    await plugin.descriptor.onDispose?.call();
-    _plugins.removeWhere((p) => p.descriptor.moduleId == moduleId);
+    await plugin.description.onDispose?.call();
+    _plugins.removeWhere((p) => p.description.moduleId == moduleId);
   }
 
   /// All registered plugins, sorted by [order].
+  // Todo: order is decided by the end developer.
   List<RegisteredPlugin> get all {
+    // Return a sorted copy of the plugins list to ensure consistent order without mutating the original list.
     final sorted = List<RegisteredPlugin>.from(_plugins);
-    sorted.sort((a, b) => a.descriptor.order.compareTo(b.descriptor.order));
+    // Sort plugins by their specified order in the description, ensuring a consistent display order in the UI.
+    sorted.sort((a, b) => a.description.order.compareTo(b.description.order));
     return sorted;
   }
 
   /// Plugins visible to [user] after evaluating each plugin's visibility policy.
+  //Todo: visibility policy is not yet utilized by the plugins, but the structure is in place for future implementation.
   List<RegisteredPlugin> visibleTo(UserIdentity user) {
-    return all.where((p) {
-      final policy = p.descriptor.visibilityPolicy;
+    return all.where((plugin) {
+      final policy = plugin.description.visibilityPolicy;
       if (policy == null) return true;
       final ctx = PermissionContext(
         user: user,
-        moduleId: p.descriptor.moduleId,
+        moduleId: plugin.description.moduleId,
       );
       return policy.evaluate(ctx).granted;
     }).toList();
   }
 
-  /// Find a plugin by moduleId.
+  /// Find a plugin by moduleId. used in [PermissionMiddleware] for permission checks.
   RegisteredPlugin? findById(String moduleId) {
     return all.cast<RegisteredPlugin?>().firstWhere(
-      (p) => p?.descriptor.moduleId == moduleId,
+      (plugin) => plugin?.description.moduleId == moduleId,
       orElse: () => null,
     );
   }

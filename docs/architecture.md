@@ -45,7 +45,7 @@ lib/
     │   │   ├── permission_contract.dart ← UserIdentity, PermissionPolicy, PersonaPermissionPolicy
     │   │   ├── upload_contract.dart     ← UploadCapability, UploadResult, UploadConfig
     │   │   ├── globals.dart             ← shared UI constants (form sizes, padding)
-    │   │   └── section_service.dart     ← ⚠ legacy Firebase service (see §12 backlog #1)
+    │   │   └── section_service.dart     ← ⚠//!legacy Firebase service (see §12 backlog #1)
     │   ├── registry/
     │   │   ├── scoped_registry.dart     ← ScopedRegistry<T> + ScopedKey (moduleId/model/collection)
     │   │   └── plugin_registry.dart     ← central plugin list, hot-reload safe

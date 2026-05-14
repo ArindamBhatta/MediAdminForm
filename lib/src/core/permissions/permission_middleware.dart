@@ -27,7 +27,7 @@ class PermissionMiddleware {
     final plugin = PluginRegistry.instance.findById(moduleId);
     if (plugin == null) return false;
 
-    final policy = plugin.descriptor.visibilityPolicy;
+    final policy = plugin.description.visibilityPolicy;
     if (policy == null) return true;
 
     return policy
@@ -40,18 +40,22 @@ class PermissionMiddleware {
     final user = _currentUser;
     if (user == null) return false;
 
-    final plugin = PluginRegistry.instance.findById(moduleId);
+    /// we find plugin because we need to get access to route-level policies, if any. If plugin is not found, we return false for safety — you might want to return true here if you prefer a fail-open approach, but fail-closed is safer by default.
+    final RegisteredPlugin<DataModel>? plugin = PluginRegistry.instance
+        .findById(moduleId);
+
     if (plugin == null) return false;
 
-    PluginRouteDescriptor? route;
-    for (final r in plugin.descriptor.routes) {
+    SingleRouteDescriptionAndPolicy? route;
+
+    for (final r in plugin.description.routes) {
       if (r.path == routePath) {
         route = r;
         break;
       }
     }
 
-    final policy = route?.accessPolicy ?? plugin.descriptor.visibilityPolicy;
+    final policy = route?.accessPolicy ?? plugin.description.visibilityPolicy;
     if (policy == null) return true;
 
     return policy

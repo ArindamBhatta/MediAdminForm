@@ -1,12 +1,12 @@
-/// Scoped registry key: module + model type + collection + optional scope.
+/// Scoped registry key: moduleId + model type + collection + optional scope.
 /// Prevents cross-module singleton collisions that the old Type-only keys caused.
-class ScopedKey {
+class CrossModuleSingletonKey {
   final String moduleId;
   final String modelType;
   final String collection;
   final String scopeId;
 
-  const ScopedKey({
+  const CrossModuleSingletonKey({
     required this.moduleId,
     required this.modelType,
     required this.collection,
@@ -14,45 +14,35 @@ class ScopedKey {
   });
 
   String get value => '$moduleId/$modelType/$collection/$scopeId';
-
-  @override
-  bool operator ==(Object other) =>
-      other is ScopedKey && other.value == value;
-
-  @override
-  int get hashCode => value.hashCode;
-
-  @override
-  String toString() => 'ScopedKey($value)';
 }
 
-/// Generic scoped registry — stores instances keyed by [ScopedKey].
+/// Generic scoped registry — stores instances keyed by [CrossModuleSingletonKey].
 /// Each module gets isolated instances: no cross-module leakage.
 ///
 /// Usage: create one static instance per adapter class:
 /// ```dart
-/// static final _registry = ScopedRegistry<MyService>();
+/// static final _registry = SingletonScopedRegistry<MyService>();
 /// ```
-class ScopedRegistry<T> {
-  ScopedRegistry();
+class SingletonScopedRegistry<T> {
+  SingletonScopedRegistry();
 
-  final Map<ScopedKey, T> _store = {};
+  final Map<CrossModuleSingletonKey, T> _store = {};
 
   /// Register or overwrite a [value] for [key].
-  void register(ScopedKey key, T value) {
+  void register(CrossModuleSingletonKey key, T value) {
     _store[key] = value;
   }
 
   /// Retrieve an existing instance, or create and register one via [factory].
-  T getOrCreate(ScopedKey key, T Function() factory) {
+  T getOrCreate(CrossModuleSingletonKey key, T Function() factory) {
     return _store.putIfAbsent(key, factory);
   }
 
   /// Retrieve an existing instance or return null.
-  T? get(ScopedKey key) => _store[key];
+  T? get(CrossModuleSingletonKey key) => _store[key];
 
   /// Remove an instance (used during plugin dispose lifecycle).
-  void unregister(ScopedKey key) {
+  void unregister(CrossModuleSingletonKey key) {
     _store.remove(key);
   }
 
@@ -61,7 +51,7 @@ class ScopedRegistry<T> {
     _store.removeWhere((key, _) => key.moduleId == moduleId);
   }
 
-  bool contains(ScopedKey key) => _store.containsKey(key);
+  bool contains(CrossModuleSingletonKey key) => _store.containsKey(key);
 
   int get size => _store.length;
 }

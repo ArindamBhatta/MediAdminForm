@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:web_ui_plugins/src/core/contracts/data_model.dart';
-import 'package:web_ui_plugins/src/core/contracts/permission_contract.dart';
 
-//1.PluginRouteBuilder is a function type that defines how to build a widget for a given route, using the current BuildContext and GoRouterState.
+import 'package:web_ui_plugins/web_ui_plugins.dart';
+
+//PluginRouteBuilder is a function type that defines how to build a widget for a given route, using the current BuildContext and GoRouterState. if we pass wrong argument typedef stop us.
 typedef PluginRouteBuilder =
     Widget Function(BuildContext context, GoRouterState state);
 
@@ -20,13 +20,13 @@ class PluginFeatureFlags {
   });
 }
 
-///Step 2: PluginRouteDescriptor Describes a single route a plugin contributes to the app shell.
-class PluginRouteDescriptor {
+///Step 2: SingleRouteDescriptionAndPolicy Describes a single route a user navigate to this route?.
+class SingleRouteDescriptionAndPolicy {
   final String path;
-  final PluginRouteBuilder builder;
-  final PermissionPolicy? accessPolicy;
+  final PluginRouteBuilder builder; //pass typedef
+  final OpenDefaultDevelopmentPolicy? accessPolicy;
 
-  const PluginRouteDescriptor({
+  const SingleRouteDescriptionAndPolicy({
     required this.path,
     required this.builder,
     this.accessPolicy,
@@ -48,7 +48,7 @@ class PluginDataBinding<T extends DataModel> {
 
 /// The top-level descriptor a developer provides to register a plugin.
 /// This is the entire surface area a module author fills in.
-class PluginDescriptor<T extends DataModel> {
+class DefaultPluginDescription<T extends DataModel> {
   /// Stable unique identifier.
   final String moduleId;
 
@@ -62,19 +62,19 @@ class PluginDescriptor<T extends DataModel> {
   final PluginFeatureFlags features;
 
   /// Routes this plugin contributes.
-  final List<PluginRouteDescriptor> routes;
+  final List<SingleRouteDescriptionAndPolicy> routes;
 
   /// Data binding: collection, serializer, empty factory.
   final PluginDataBinding<T> dataBinding;
 
   /// Visibility policy: is this plugin shown to current user?
-  final PermissionPolicy? visibilityPolicy;
+  final PermissionPolicyAgreement? visibilityPolicy;
 
   /// Optional lifecycle hooks.
   final Future<void> Function()? onRegister;
   final Future<void> Function()? onDispose;
 
-  const PluginDescriptor({
+  const DefaultPluginDescription({
     required this.moduleId,
     required this.title,
     required this.icon,

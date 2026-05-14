@@ -1,4 +1,4 @@
-/// Identity of the currently authenticated user.
+/// Identity of the currently authenticated user [PermissionMiddleware] and [PluginRegistry].
 class UserIdentity {
   final String userId;
   final String? email;
@@ -7,7 +7,7 @@ class UserIdentity {
   const UserIdentity({required this.userId, required this.persona, this.email});
 }
 
-/// Context passed to every permission evaluation.
+/// Create instance where need permission evaluation like visibility, route access, etc.[PermissionMiddleware] [PluginRegistry].
 class PermissionContext {
   final UserIdentity user;
   final String moduleId;
@@ -24,20 +24,19 @@ class PermissionContext {
 class PermissionResult {
   final bool granted;
   final String? reason;
-
   const PermissionResult.granted() : granted = true, reason = null;
   const PermissionResult.denied(this.reason) : granted = false;
 }
 
-/// A callable that evaluates whether a given context has permission.
-/// Implement this in the consuming app to encode your RBAC logic.
-abstract class PermissionPolicy {
+/// Implement this in the consuming app to encode your Role-Based Access Control logic.[DefaultPluginDescription] and [AppBootstrap].
+abstract interface class PermissionPolicyAgreement {
+  //method Definition
   PermissionResult evaluate(PermissionContext context);
 }
 
 /// Default open policy — grants everything. Use only in development.
-class OpenPermissionPolicy implements PermissionPolicy {
-  const OpenPermissionPolicy();
+class OpenDefaultDevelopmentPolicy implements PermissionPolicyAgreement {
+  const OpenDefaultDevelopmentPolicy();
 
   @override
   PermissionResult evaluate(PermissionContext context) =>
@@ -45,7 +44,7 @@ class OpenPermissionPolicy implements PermissionPolicy {
 }
 
 /// Restricts access to users whose persona is in the [allowedPersonas] set.
-class PersonaPermissionPolicy implements PermissionPolicy {
+class PersonaPermissionPolicy implements PermissionPolicyAgreement {
   final Set<String> allowedPersonas;
   final String? denyReason;
 

@@ -6,8 +6,8 @@ import 'package:vet_application/domain/enums/vet_application_enums.dart';
 import 'package:vet_application/domain/models/technician_model.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
 
-final PluginDescriptor<TechnicianModel>
-technicianPlugin = PluginDescriptor<TechnicianModel>(
+final DefaultPluginDescription<TechnicianModel>
+technicianPlugin = DefaultPluginDescription<TechnicianModel>(
   moduleId: 'technicians',
   title: VetAppSection.technicians.label,
   icon: VetAppSection.technicians.icon,
@@ -22,15 +22,13 @@ technicianPlugin = PluginDescriptor<TechnicianModel>(
   ),
 
   routes: [
-    PluginRouteDescriptor(
+    SingleRouteDescriptionAndPolicy(
       path: '/technicians',
       builder: (BuildContext ctx, GoRouterState state) => TechnicianPluginPage(
         initialSelectedItemId: state.uri.queryParameters['selected'],
       ),
-      accessPolicy: PersonaPermissionPolicy({
-        VetApplicationEnums.operator.label,
-        VetApplicationEnums.admin.label,
-      }, denyReason: 'Only  operator can access technicians section'),
+      accessPolicy:
+          OpenDefaultDevelopmentPolicy(), //Todo: change this to real policy after login and persona implementation
     ),
   ],
 

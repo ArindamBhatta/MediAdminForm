@@ -175,7 +175,7 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
   Widget build(BuildContext context) {
     final items = PluginRegistry.instance.all.where((plugin) {
       return PermissionMiddleware.instance.isPluginVisible(
-        plugin.descriptor.moduleId,
+        plugin.description.moduleId,
       );
     }).toList();
 
@@ -204,12 +204,12 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
                 double? selectedTop;
                 var runningTop = 0.0;
                 for (var index = 0; index < items.length; index++) {
-                  final descriptor = items[index].descriptor;
+                  final description = items[index].description;
 
                   /// Checks if the current path matches any of the plugin's routes to determine if this item is selected.
                   final isSelected = _matchesRoute(
                     currentPath,
-                    descriptor.routes,
+                    description.routes,
                   );
 
                   if (isSelected) {
@@ -258,7 +258,7 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
                               _buildNavItem(
                                 context,
                                 currentPath: currentPath,
-                                descriptor: items[index].descriptor,
+                                description: items[index].description,
                                 showLabels: showLabels,
                                 itemHeight: itemHeight,
                               ),
@@ -288,21 +288,21 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
   Widget _buildNavItem(
     BuildContext context, {
     required String currentPath,
-    required PluginDescriptor descriptor,
+    required DefaultPluginDescription description,
     required bool showLabels,
     required double itemHeight,
   }) {
-    final primaryRoute = descriptor.routes.firstOrNull;
+    final primaryRoute = description.routes.firstOrNull;
     if (primaryRoute == null) {
       return const SizedBox.shrink();
     }
 
-    final isSelected = _matchesRoute(currentPath, descriptor.routes);
+    final isSelected = _matchesRoute(currentPath, description.routes);
 
     return SizedBox(
       height: itemHeight,
       child: _RightTooltip(
-        message: descriptor.title,
+        message: description.title,
         enabled: !showLabels,
         child: Material(
           color: Colors.transparent,
@@ -332,7 +332,7 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
                     ? MainAxisAlignment.start
                     : MainAxisAlignment.center,
                 children: [
-                  Icon(descriptor.icon, color: descriptor.color, size: 20),
+                  Icon(description.icon, color: description.color, size: 20),
                   if (showLabels) ...[
                     const SizedBox(width: 12),
                     Expanded(
@@ -351,7 +351,7 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
                                   : FontWeight.w400,
                             ),
                         child: Text(
-                          descriptor.title,
+                          description.title,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -367,7 +367,10 @@ class _PluginLeftNavigationState extends State<PluginLeftNavigation> {
   }
 
   /// Checks if [currentPath] matches any of the plugin's routes (exact or as a parent).
-  bool _matchesRoute(String currentPath, List<PluginRouteDescriptor> routes) {
+  bool _matchesRoute(
+    String currentPath,
+    List<SingleRouteDescriptionAndPolicy> routes,
+  ) {
     for (final route in routes) {
       final path = route.path;
       if (currentPath == path) {

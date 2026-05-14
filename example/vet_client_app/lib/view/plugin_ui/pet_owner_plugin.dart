@@ -8,8 +8,8 @@ import '../../domain/enums/vet_application_enums.dart';
 import '../../domain/models/pet_owner_model.dart';
 
 // Single Source of Truth: - It describes everything the framework needs to know about a plugin/module: its unique ID, display info, routes, data binding, permissions, and features.
-final PluginDescriptor<PetOwnerModel>
-petOwnerPlugin = PluginDescriptor<PetOwnerModel>(
+final DefaultPluginDescription<PetOwnerModel>
+petOwnerPlugin = DefaultPluginDescription<PetOwnerModel>(
   moduleId: 'pet-owners',
   title: VetAppSection.petOwners.label,
   icon: VetAppSection.petOwners.icon,
@@ -38,7 +38,7 @@ petOwnerPlugin = PluginDescriptor<PetOwnerModel>(
 
   /// Routes: path, builder, and optional access policy. The framework uses this to generate GoRouter routes and enforce permissions. The plugin author only writes the builder logic, and the framework handles the rest.
   routes: [
-    PluginRouteDescriptor(
+    SingleRouteDescriptionAndPolicy(
       path: '/pet-owners', //GoRouter path
       builder: (BuildContext ctx, GoRouterState state) => PetOwnerPluginPage(
         initialSelectedItemId: state.uri.queryParameters['selected'],

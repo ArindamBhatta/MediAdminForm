@@ -9,8 +9,8 @@ import '../../domain/models/doctor_model.dart';
 
 /// Doctors plugin descriptor.
 /// This is the entire surface area the developer fills in to add a new section.
-final PluginDescriptor<DoctorModel>
-doctorsPlugin = PluginDescriptor<DoctorModel>(
+final DefaultPluginDescription<DoctorModel>
+doctorsPlugin = DefaultPluginDescription<DoctorModel>(
   moduleId: 'doctors',
   title: VetAppSection.doctors.label,
   icon: VetAppSection.doctors.icon,
@@ -34,7 +34,7 @@ doctorsPlugin = PluginDescriptor<DoctorModel>(
     createEmpty: DoctorModel.new,
   ),
   routes: [
-    PluginRouteDescriptor(
+    SingleRouteDescriptionAndPolicy(
       path: '/doctors', // Navigates
       builder: (BuildContext ctx, GoRouterState state) => DoctorsSectionPage(
         initialSelectedItemId: state.uri.queryParameters['selected'],
