@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_ui_plugins/web_ui_plugins.dart';
 
 /// Resolved and active plugin entry, stored after successful registration.
@@ -6,6 +8,36 @@ class RegisteredPlugin<T extends DataModel> {
   final DateTime registeredAt;
 
   RegisteredPlugin(this.description) : registeredAt = DateTime.now();
+
+  /// Generates a strictly-typed BlocProvider for this specific plugin instance.
+  BlocProvider createCubitProvider(SectionRepo repository) {
+    return BlocProvider<FormCubit<T>>(
+      key: ValueKey('cubit_${description.moduleId}'),
+      create: (_) => FormCubit<T>(repo: repository as SectionRepo<T>),
+    );
+  }
+
+  /// Generates a strictly-typed RepositoryProvider for this specific plugin instance.
+  RepositoryProvider createRepositoryProvider(
+    Map<String, SectionRepo> repoCache,
+  ) {
+    return RepositoryProvider<SectionRepo<T>>(
+      key: ValueKey('repo_${description.moduleId}'),
+      create: (_) {
+        final repo = SectionRepo<T>(
+          moduleId: description.moduleId,
+          service: FirestoreService<T>(
+            moduleId: description.moduleId,
+            collectionName: description.dataBinding.collectionName,
+            fromJson: description.dataBinding.fromJson,
+          ),
+        );
+        repoCache[description.moduleId] = repo;
+        return repo;
+      },
+      lazy: false,
+    );
+  }
 }
 
 /// All plugins register here during bootstrap; the app shell reads from here

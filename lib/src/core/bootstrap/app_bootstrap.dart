@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:web_ui_plugins/web_ui_plugins.dart';
@@ -29,7 +28,7 @@ class AppBootstrap {
   static const String noPluginsPath = '/no-plugins';
 
   ///step 1:  Internal cache to ensure Cubits link to the correct Repositories during bootstrap.
-  static final Map<String, SectionRepo> _repoCache = {};
+  // static final Map<String, SectionRepo> _repoCache = {};
 
   ///initialize firebase private property can't access outside.
   static BootstrapConfig? _config;
@@ -71,80 +70,25 @@ class AppBootstrap {
     ThemeMode? themeMode,
     String? title,
     String? initialLocation,
-    WidgetBuilder?
-    forbiddenBuilder, // optional custom forbidden page builder, otherwise a default one is used.
-    WidgetBuilder?
-    noPluginsBuilder, // optional custom no plugins page builder, otherwise a default one is used.
+    // optional custom forbidden page builder, otherwise a default one is used.
+    WidgetBuilder? forbiddenBuilder,
+    // optional custom no plugins page builder, otherwise a default one is used.
+    WidgetBuilder? noPluginsBuilder,
     required Widget Function(BuildContext context, Widget child) shellBuilder,
   }) {
-    // Step 3a: For each registered plugin, create a RepositoryProvider based on its data binding configuration. These repositories are cached to ensure the same instance is used when creating Cubits.
-    final providers = _buildRepositoryProviders();
-    return MultiRepositoryProvider(
-      providers: providers,
-      child: Builder(
-        builder: (context) {
-          final cubits = _buildCubitProviders(context);
-
-          final router = createRouter(
-            shellBuilder: shellBuilder,
-            initialLocation: initialLocation,
-            forbiddenBuilder: forbiddenBuilder,
-            noPluginsBuilder: noPluginsBuilder,
-          );
-          // Step 3b: Wrap the MaterialApp with MultiBlocProvider to provide Cubits to all plugin routes.
-          return MultiBlocProvider(
-            providers: cubits,
-            child: MaterialApp.router(
-              title: title,
-              theme: theme,
-              darkTheme: darkTheme,
-              themeMode: themeMode,
-              routerConfig: router,
-            ),
-          );
-        },
-      ),
+    final router = createRouter(
+      shellBuilder: shellBuilder,
+      initialLocation: initialLocation,
+      forbiddenBuilder: forbiddenBuilder,
+      noPluginsBuilder: noPluginsBuilder,
     );
-  }
-
-  /// Step 3a: For each registered plugin, create a RepositoryProvider based on its data binding configuration. These repositories are cached to ensure the same instance is used when creating Cubits.
-  static List<RepositoryProvider> _buildRepositoryProviders() {
-    return PluginRegistry.instance.all.map((entry) {
-      final DefaultPluginDescription<DataModel> description = entry.description;
-      print(
-        'Initializing repository for RepositoryProvider: ${description.moduleId}',
-      );
-      return RepositoryProvider(
-        key: ValueKey('repo_${description.moduleId}'),
-        create: (_) => SectionRepo(
-          moduleId: description.moduleId,
-          service: FirestoreService(
-            moduleId: description.moduleId,
-            collectionName: description.dataBinding.collectionName,
-            fromJson: description.dataBinding.fromJson,
-          ),
-        ),
-        lazy: false,
-      );
-    }).toList();
-  }
-
-  static List<BlocProvider> _buildCubitProviders(BuildContext context) {
-    return PluginRegistry.instance.all.map((entry) {
-      final description = entry.description;
-      final repository = _repoCache[description.moduleId];
-
-      if (repository == null) {
-        throw StateError(
-          'Repository not initialized for module: ${description.moduleId}',
-        );
-      }
-
-      return BlocProvider(
-        key: ValueKey('cubit_${description.moduleId}'),
-        create: (_) => FormCubit(repo: repository),
-      );
-    }).toList();
+    return MaterialApp.router(
+      title: title,
+      theme: theme,
+      darkTheme: darkTheme,
+      themeMode: themeMode,
+      routerConfig: router,
+    );
   }
 
   static GoRouter createRouter({
@@ -168,7 +112,7 @@ class AppBootstrap {
           path: forbiddenPath,
           builder: (context, _) =>
               forbiddenBuilder?.call(context) ??
-              _PluginStatusUiView(
+              _PluginStatusErrorUiView(
                 title: title ?? 'Default Title Access denied',
                 message:
                     message ??
@@ -181,7 +125,7 @@ class AppBootstrap {
           path: noPluginsPath,
           builder: (context, _) =>
               noPluginsBuilder?.call(context) ??
-              _PluginStatusUiView(
+              _PluginStatusErrorUiView(
                 title: title ?? 'No plugins available',
                 message:
                     message ??
@@ -191,7 +135,8 @@ class AppBootstrap {
 
         /// Shell route that wraps all plugin routes, providing a common layout (like a sidebar) across the app. The shellBuilder is provided by the UI and can be customized to include navigation, headers, etc.
         ShellRoute(
-          builder: (context, _, child) => shellBuilder(context, child),
+          builder: (context, _, child) =>
+              shellBuilder(context, child), //main UI Placeholder() cover whole
           routes: pluginRoutes,
         ),
       ],
@@ -263,11 +208,11 @@ class AppBootstrap {
   }
 }
 
-class _PluginStatusUiView extends StatelessWidget {
+class _PluginStatusErrorUiView extends StatelessWidget {
   final String title;
   final String message;
 
-  const _PluginStatusUiView({required this.title, required this.message});
+  const _PluginStatusErrorUiView({required this.title, required this.message});
 
   @override
   Widget build(BuildContext context) {

@@ -39,20 +39,23 @@ lib/
 └── src/
     ├── core/
     │   ├── contracts/           ← backend-agnostic interfaces + shared config
-    │   │   ├── data_model.dart          ← DataModel base class
-    │   │   ├── form_service_mixin.dart  ← CRUD interface + broadcast stream
-    │   │   ├── plugin_descriptor.dart   ← Main Dependency -> PluginFeatureFlags, PluginDataBinding, PluginRouteDescriptor
-    │   │   ├── permission_contract.dart ← UserIdentity, PermissionPolicy, PersonaPermissionPolicy
-    │   │   ├── upload_contract.dart     ← UploadCapability, UploadResult, UploadConfig
-    │   │   ├── globals.dart             ← shared UI constants (form sizes, padding)
-    │   │   └── section_service.dart     ← ⚠//!legacy Firebase service (see §12 backlog #1)
+    │   │   ├── data_model.dart                  ← base Model
+    │   │   ├── default_plugin_descriptor.dart   ← Defend all Contract what end user needs
+    │   │   ├── globals.dart                     ← shared UI constants (form sizes, padding)
+    │   │   ├── permission_contract.dart         ← All Access permission policy
+    │   │   ├── upload_contract.dart             ← ......
+   
     │   ├── registry/
-    │   │   ├── scoped_registry.dart     ← ScopedRegistry<T> + ScopedKey (moduleId/model/collection)
-    │   │   └── plugin_registry.dart     ← central plugin list, hot-reload safe
+    │   │   └── plugin_registry.dart               ← All plugins register here during bootstrap
+    │   │   ├── singleton_scoped_registry.dart     ← SingletonScopedRegistry<T> + CrossModuleSingletonKey(moduleId/model/collection)
+
+
     │   ├── bootstrap/
     │   │   └── app_bootstrap.dart       ← initialize → registerPlugins → buildApp / buildRouterApp
+
     │   ├── permissions/
-    │   │   └── permission_middleware.dart  ← PermissionMiddleware singleton + PluginGate widget
+    │   │   └── permission_middleware.dart  ← PermissionMiddleware + PermissionGuard (for go_router)
+
     │   ├── form/
     │   │   ├── cubit/
     │   │   │   ├── form_cubit.dart      ← FormCubit<T> (create/read/update/delete intents)
@@ -91,20 +94,17 @@ lib/
         └── compat.dart                  ← migration shims for old SectionRepo/SectionService code
 
 example/
-└── shalloon_web/                  ← reference consumer app
-    ├── pubspec.yaml               ← depends on web_ui_plugins via path
+└── vet_clinic_web/                               ← reference consumer app
+    ├── pubspec.yaml                              ← depends on web_ui_plugins via path
     └── lib/
-        ├── main.dart              ← 3-step bootstrap entry point
+        ├── main.dart                              ← 3-step app_bootstrap.run() and buildRouterApp()
         ├── app/
-        │   └── bootstrap.dart     ← ShalloonBootstrap.run()
+        │   └── vet_application_bootstrap.dart     ← initialize Firebase, default author, plugins
         ├── domain/
-        │   ├── enums/             ← ShalloonSection, ShalloonPersona, AppointmentStatus
-        │   └── models/            ← StaffModel, ClientModel (only thing devs write)
-        ├── features/
-        │   ├── staff/             ← staffPlugin descriptor + StaffDetailView
-        │   └── clients/           ← clientPlugin descriptor + ClientDetailView
-        └── home/
-            └── shell_view.dart    ← ShalloonShell — sidebar generated from registry
+        │   ├── enums/             
+        │   └── models/            
+        └── view/
+            └── vet_application.dart   ← Left Navigation is defined here, but driven by PluginRegistry + PermissionMiddleware
 ```
 
 ---

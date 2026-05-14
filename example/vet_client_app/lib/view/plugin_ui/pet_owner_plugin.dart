@@ -47,6 +47,13 @@ petOwnerPlugin = DefaultPluginDescription<PetOwnerModel>(
   ],
 );
 
+/// Single source of truth for Pet Owner state. Because this is static, the state
+/// (and realtime listeners) persist even when navigating to other plugins.
+class PetOwnerPluginState {
+  static final repo = SectionRepo<PetOwnerModel>.fromDescriptor(petOwnerPlugin);
+  static final cubit = FormCubit<PetOwnerModel>(repo: repo);
+}
+
 class PetOwnerPluginPage extends StatelessWidget {
   final String? initialSelectedItemId;
 
@@ -139,20 +146,13 @@ class PetOwnerPluginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    try {
-      //Step 1: Try to get the repo from the context. If this page is being navigated to from within the plugin, the repo will already be in the context, so we can just use it.
-      final FormCubit<PetOwnerModel> cubit =
-          BlocProvider.of<FormCubit<PetOwnerModel>>(context);
-
-      return _buildSection(context, cubit.repo as SectionRepo<PetOwnerModel>);
-    } catch (_) {
-      // Step 2: If the repo is not in the context, it means this page is being navigated to directly (e.g. by typing the URL or from another plugin), so we need to create the repo ourselves using the plugin descriptor.
-      final repo = SectionRepo<PetOwnerModel>.fromDescriptor(petOwnerPlugin);
-
-      return BlocProvider<FormCubit<PetOwnerModel>>(
-        create: (_) => FormCubit<PetOwnerModel>(repo: repo),
-        child: Builder(builder: (ctx) => _buildSection(ctx, repo)),
-      );
-    }
+    // Provide the persistent, strictly-typed cubit to the widget tree for this route.
+    // FormPageView and SectionWidget will successfully find it via BlocProvider.of!
+    return BlocProvider.value(
+      value: PetOwnerPluginState.cubit,
+      child: Builder(
+        builder: (ctx) => _buildSection(ctx, PetOwnerPluginState.repo),
+      ),
+    );
   }
 }

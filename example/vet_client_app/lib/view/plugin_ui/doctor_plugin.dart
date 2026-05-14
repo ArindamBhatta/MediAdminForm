@@ -33,6 +33,7 @@ doctorsPlugin = DefaultPluginDescription<DoctorModel>(
     fromJson: DoctorModel.fromJson,
     createEmpty: DoctorModel.new,
   ),
+  // It turns this into a GoRoute and adds it to a list called pluginRoutes.
   routes: [
     SingleRouteDescriptionAndPolicy(
       path: '/doctors', // Navigates
@@ -42,6 +43,13 @@ doctorsPlugin = DefaultPluginDescription<DoctorModel>(
     ),
   ],
 );
+
+/// Single source of truth for Doctor state. Because this is static, the state
+/// (and realtime listeners) persist even when navigating to other plugins.
+class DoctorsPluginState {
+  static final repo = SectionRepo<DoctorModel>.fromDescriptor(doctorsPlugin);
+  static final cubit = FormCubit<DoctorModel>(repo: repo);
+}
 
 /// Doctors section page — the developer writes this view.
 /// The framework handles data, state, list, form, and dialog.
@@ -163,15 +171,13 @@ class DoctorsSectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    try {
-      final cubit = BlocProvider.of<FormCubit<DoctorModel>>(context);
-      return _buildSection(context, cubit.repo as SectionRepo<DoctorModel>);
-    } catch (_) {
-      final repo = SectionRepo<DoctorModel>.fromDescriptor(doctorsPlugin);
-      return BlocProvider<FormCubit<DoctorModel>>(
-        create: (_) => FormCubit<DoctorModel>(repo: repo),
-        child: Builder(builder: (ctx) => _buildSection(ctx, repo)),
-      );
-    }
+    // Provide the persistent, strictly-typed cubit to the widget tree for this route.
+    // FormPageView and SectionWidget will successfully find it via BlocProvider.of!
+    return BlocProvider.value(
+      value: DoctorsPluginState.cubit,
+      child: Builder(
+        builder: (ctx) => _buildSection(ctx, DoctorsPluginState.repo),
+      ),
+    );
   }
 }
