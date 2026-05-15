@@ -324,22 +324,18 @@ Handles list-view state: full item list, filtered view, selection, search, statu
 
 Issues found during architecture review (April 2026). Ordered by severity.
 
-### #1 — `SectionService` (Firebase) lives in `contracts/` — HIGH
-**File:** `lib/src/core/contracts/section_service.dart`
-**Problem:** `contracts/` is supposed to be pure Dart with no backend dependencies. This file imports `cloud_firestore` and `cloud_functions`, violating principle #1.
-**Fix:** Move to `lib/src/adapters/firebase/section_service.dart` and re-export via `compat.dart`.
 
-### #2 — `DataModel.uid` typed `String?` but semantically required — MEDIUM
+### #1 — `DataModel.uid` typed `String?` but semantically required — MEDIUM
 **File:** `lib/src/core/contracts/data_model.dart`
 **Problem:** `String? get uid; // not null` — the comment contradicts the type. Every downstream lookup (`item.uid == id`) must null-check unnecessarily.
 **Fix:** Change to `String get uid`. All concrete models must provide a non-null uid, surfacing missing IDs at compile time.
 
-### #3 — `UploadCapability` stored in `BootstrapConfig` but never injected into plugins — MEDIUM
+### #2 — `UploadCapability` stored in `BootstrapConfig` but never injected into plugins — MEDIUM
 **File:** `lib/src/core/bootstrap/app_bootstrap.dart`
 **Problem:** `BootstrapConfig.uploadCapability` is accepted but never passed to `FormCubit` or `PluginDescriptor`. Plugins that declare `supportsUpload: true` have no access to the capability at runtime.
 **Fix:** Pass `uploadCapability` through `AppBootstrap._buildCubits` or expose it via a `RepositoryProvider<UploadCapability>`.
 
-### #4 — All `FormCubit`s in `_buildCubits` share the first `ScopedRepo` — HIGH (bug)
+### #3 — All `FormCubit`s in `_buildCubits` share the first `ScopedRepo` — HIGH (bug)
 **File:** `lib/src/core/bootstrap/app_bootstrap.dart`
 ```dart
 create: (_) => FormCubit(repo: RepositoryProvider.of<ScopedRepo>(context)),
@@ -347,32 +343,28 @@ create: (_) => FormCubit(repo: RepositoryProvider.of<ScopedRepo>(context)),
 **Problem:** `RepositoryProvider.of<ScopedRepo>` resolves untyped and returns the first `ScopedRepo` in the tree for every plugin. Every `FormCubit` ends up pointing at the same repository.
 **Fix:** Look up each plugin's repo by `moduleId` using a typed provider key or a registry lookup inside the `create` closure.
 
-### #5 — `FormRepoMixin.update` and `FormCubit.updateItem` expose an index — MEDIUM
+### #4 — `FormRepoMixin.update` and `FormCubit.updateItem` expose an index — MEDIUM
 **Files:** `form_repo_mixin.dart`, `form_cubit.dart`
 **Problem:** `update(int index, T item)` — callers must track a list position. The underlying service finds items by `id`, not index; the index only updates the local cache.
 **Fix:** Change signature to `update(T item)` and find the cache index internally via `items.indexWhere((e) => e.uid == item.uid)`.
 
-### #6 — `ScopedRepo` uses `(service as dynamic).collectionName` — MEDIUM
+### #5 — `ScopedRepo` uses `(service as dynamic).collectionName` — MEDIUM
 **File:** `lib/src/adapters/firebase/scoped_repo.dart`
 **Problem:** Dynamic cast to read `collectionName` silently falls back to `T.toString()` if the cast fails, producing a wrong registry key.
 **Fix:** Define `abstract interface CollectionNamed { String get collectionName; }`, implement it on `FirestoreService`, and cast to `CollectionNamed` instead of `dynamic`.
 
-### #7 — `SectionCubit` holds an unused `FormCubit` reference — LOW
-**File:** `lib/src/core/section/cubit/section_cubit.dart`
-**Problem:** `final FormCubit<T> formCubit` is stored but never called inside `SectionCubit`. This creates artificial coupling between two independent cubits.
-**Fix:** Remove `formCubit` from `SectionCubit`'s constructor. Coordinate them at the widget layer (e.g., `SectionView` owns both).
 
-### #8 — No `onError` handler on realtime stream subscriptions — MEDIUM
+### #6 — No `onError` handler on realtime stream subscriptions — MEDIUM
 **Files:** `section_cubit.dart`, `form_repo_mixin.dart`
 **Problem:** `_repoStream.listen((data) { ... })` has no `onError` callback. A Firestore permission error or network failure silently cancels the subscription with no state update.
 **Fix:** Add `onError: (error) => emit(state.copyWith(status: SuccessStatus.failure))` (and equivalent in `FormRepoMixin`).
 
-### #9 — `SectionState.addedItemId` skips the sentinel pattern in `copyWith` — LOW
+### #7 — `SectionState.addedItemId` skips the sentinel pattern in `copyWith` — LOW
 **File:** `lib/src/core/section/cubit/section_state.dart`
 **Problem:** Every call to `copyWith(searchText: 'x')` silently resets `addedItemId` to `null` because it does not fall back to `this.addedItemId`.
 **Fix:** Apply the same `static const Object _unset` sentinel pattern used by `selectedItem` and `fromDate`.
 
-### #10 — `Globals.hasUnsavedFormChanges` is a mutable global static — MEDIUM
+### #8 — `Globals.hasUnsavedFormChanges` is a mutable global static — MEDIUM
 **File:** `lib/src/core/contracts/globals.dart`
 **Problem:** `FormPageView` writes this flag and `PluginLeftNavigation` reads it, but nothing reacts to changes — no stream, no notifier. The flag can also become stale between page navigations.
 **Fix:** Move `hasUnsavedChanges` into `FormCubit`'s state (or a `ValueNotifier`). Navigation widgets subscribe to it reactively instead of polling a global.

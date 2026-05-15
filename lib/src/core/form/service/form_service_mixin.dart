@@ -1,5 +1,7 @@
 import 'dart:async';
 
+/* absolutely zero mention of cloud_firestore in that code.
+ It is pure Dart. It just says: "I don't care how you do it, but whatever backend you use must be able to create, read, update, delete, and provide a data stream." */
 mixin FormServiceMixin<T> {
   // Broadcast stream for real-time data updates
   final StreamController<List<T>> _dataController =
